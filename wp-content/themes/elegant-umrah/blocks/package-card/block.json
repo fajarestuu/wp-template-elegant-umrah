@@ -1,0 +1,66 @@
+{
+    "apiVersion": 3,
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "elegant-umrah/package-card",
+    "version": "1.0.0",
+    "title": "EU Package Card",
+    "category": "elegant-umrah",
+    "icon": "star-filled",
+    "description": "Individual Umrah/Hajj package card with image, details, pricing, and booking CTA.",
+    "keywords": ["package", "card", "price", "umrah", "hajj", "travel"],
+    "textdomain": "elegant-umrah",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "Umrah Premium 12 Days"
+        },
+        "packageType": {
+            "type": "string",
+            "default": "Umrah Package"
+        },
+        "price": {
+            "type": "string",
+            "default": "USD 1,500"
+        },
+        "duration": {
+            "type": "string",
+            "default": "12 Days / 11 Nights"
+        },
+        "departureDate": {
+            "type": "string",
+            "default": ""
+        },
+        "hotel": {
+            "type": "string",
+            "default": ""
+        },
+        "airline": {
+            "type": "string",
+            "default": ""
+        },
+        "isFeatured": {
+            "type": "boolean",
+            "default": false
+        },
+        "bookingUrl": {
+            "type": "string",
+            "default": "/packages"
+        },
+        "imageId": {
+            "type": "integer",
+            "default": 0
+        },
+        "imageUrl": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "supports": {
+        "html": false,
+        "align": false,
+        "anchor": true
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style.css",
+    "render": "file:./render.php"
+}

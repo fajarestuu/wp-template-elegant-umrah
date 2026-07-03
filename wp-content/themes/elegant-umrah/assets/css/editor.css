@@ -1,0 +1,85 @@
+/**
+ * Block Editor Styles
+ * Applied inside the Gutenberg editor canvas
+ *
+ * @package ElegantUmrah
+ */
+
+/* Load Google Fonts in editor */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+/* Apply Poppins to editor */
+.editor-styles-wrapper,
+.editor-styles-wrapper p,
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4,
+.editor-styles-wrapper h5,
+.editor-styles-wrapper h6 {
+    font-family: 'Poppins', sans-serif !important;
+}
+
+/* Content width */
+.editor-styles-wrapper .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Hero block preview in editor */
+.editor-styles-wrapper .eu-hero {
+    min-height: 400px;
+    background: #0B0B0B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+/* Package card preview */
+.editor-styles-wrapper .eu-package-card {
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+/* Section label color */
+.editor-styles-wrapper .eu-section-label {
+    color: #D4AF37 !important;
+}
+
+/* Button styles in editor */
+.editor-styles-wrapper .wp-block-button.eu-btn-cta .wp-block-button__link,
+.editor-styles-wrapper .eu-btn-cta .wp-block-button__link {
+    background: linear-gradient(135deg, #D4AF37, #B8960C) !important;
+    color: #0B0B0B !important;
+    font-weight: 700;
+    border-radius: 4px;
+}
+
+/* Separator gold color */
+.editor-styles-wrapper .eu-separator {
+    border-color: #D4AF37;
+    width: 60px;
+}
+
+/* Footer dark bg indicator */
+.editor-styles-wrapper .eu-footer {
+    border-top: 3px solid #D4AF37;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Navigation indicator */
+.editor-styles-wrapper .eu-site-header {
+    background: #0B0B0B;
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    margin-bottom: 0;
+}

@@ -1,0 +1,86 @@
+{
+    "apiVersion": 3,
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "elegant-umrah/hero",
+    "version": "1.0.0",
+    "title": "EU Hero Block",
+    "category": "elegant-umrah",
+    "icon": "star-filled",
+    "description": "Full-screen hero section with background image, headline, subtitle, and CTA buttons. Designed for the Elegant Umrah front page.",
+    "keywords": ["hero", "banner", "umrah", "landing", "cta"],
+    "textdomain": "elegant-umrah",
+    "attributes": {
+        "title": {
+            "type": "string",
+            "default": "Your Journey to the Holy Land Begins Here"
+        },
+        "highlight": {
+            "type": "string",
+            "default": "Holy Land"
+        },
+        "subtitle": {
+            "type": "string",
+            "default": "Experience a sacred pilgrimage with full comfort and care. Licensed, trusted, and dedicated to serving pilgrims since 2005."
+        },
+        "badge": {
+            "type": "string",
+            "default": "✦ Trusted Since 2005 · 50,000+ Pilgrims Served ✦"
+        },
+        "ctaPrimary": {
+            "type": "string",
+            "default": "🕋 Book Umrah Now"
+        },
+        "ctaPrimaryUrl": {
+            "type": "string",
+            "default": "/packages"
+        },
+        "ctaSecondary": {
+            "type": "string",
+            "default": "View All Packages"
+        },
+        "ctaSecondaryUrl": {
+            "type": "string",
+            "default": "/packages"
+        },
+        "backgroundId": {
+            "type": "integer",
+            "default": 0
+        },
+        "backgroundUrl": {
+            "type": "string",
+            "default": ""
+        },
+        "overlayOpacity": {
+            "type": "number",
+            "default": 0.75
+        },
+        "minHeight": {
+            "type": "string",
+            "default": "100svh"
+        }
+    },
+    "supports": {
+        "html": false,
+        "align": ["full"],
+        "color": {
+            "background": false,
+            "text": false
+        },
+        "spacing": {
+            "padding": false,
+            "margin": false
+        },
+        "typography": false,
+        "anchor": true
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style.css",
+    "render": "file:./render.php",
+    "example": {
+        "attributes": {
+            "title": "Your Journey to the Holy Land Begins Here",
+            "subtitle": "Trusted Umrah & Hajj travel with 20+ years experience.",
+            "badge": "✦ 50,000+ Pilgrims Served ✦"
+        }
+    }
+}

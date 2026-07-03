@@ -1,0 +1,42 @@
+{
+    "apiVersion": 3,
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "elegant-umrah/testimonial",
+    "version": "1.0.0",
+    "title": "EU Testimonial Card",
+    "category": "elegant-umrah",
+    "icon": "format-quote",
+    "description": "A single testimonial/review card for display on dark backgrounds.",
+    "keywords": ["testimonial", "review", "quote", "pilgrim"],
+    "textdomain": "elegant-umrah",
+    "attributes": {
+        "quote": {
+            "type": "string",
+            "default": "Write your testimonial here..."
+        },
+        "authorName": {
+            "type": "string",
+            "default": "Pilgrim Name"
+        },
+        "authorOrigin": {
+            "type": "string",
+            "default": "City, Country"
+        },
+        "packageType": {
+            "type": "string",
+            "default": "Umrah 2024"
+        },
+        "rating": {
+            "type": "integer",
+            "default": 5
+        }
+    },
+    "supports": {
+        "html": false,
+        "align": false,
+        "anchor": true
+    },
+    "editorScript": "file:./index.js",
+    "style": "file:./style.css",
+    "render": "file:./render.php"
+}

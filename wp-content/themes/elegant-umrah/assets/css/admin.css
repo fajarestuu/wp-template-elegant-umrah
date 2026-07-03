@@ -1,0 +1,197 @@
+/**
+ * Admin Styles for Elegant Umrah Meta Boxes
+ *
+ * @package ElegantUmrah
+ */
+
+/* =========================================
+   META BOX CONTAINER
+   ========================================= */
+.eu-meta-box-wrap {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    padding: 0.75rem 0;
+}
+
+.eu-meta-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.eu-meta-field.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Labels */
+.eu-meta-field label {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: #1e1e1e;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Inputs */
+.eu-meta-field input[type="text"],
+.eu-meta-field input[type="date"],
+.eu-meta-field input[type="number"],
+.eu-meta-field input[type="url"],
+.eu-meta-field input[type="email"],
+.eu-meta-field textarea,
+.eu-meta-field select {
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #1e1e1e;
+    background: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    line-height: 1.5;
+}
+
+.eu-meta-field input:focus,
+.eu-meta-field textarea:focus,
+.eu-meta-field select:focus {
+    outline: none;
+    border-color: #D4AF37;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
+}
+
+.eu-meta-field textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Description text */
+.eu-meta-field .description {
+    font-size: 0.75rem;
+    color: #757575;
+    line-height: 1.45;
+    font-style: italic;
+}
+
+/* Required asterisk */
+.eu-meta-field label span[style*="color:red"] {
+    color: #d63638 !important;
+    margin-left: 2px;
+}
+
+/* Checkbox label style */
+.eu-meta-field label[style*="font-weight:normal"] {
+    font-weight: normal !important;
+    cursor: pointer;
+    padding: 0.25rem 0;
+}
+
+/* =========================================
+   IMAGE FIELD
+   ========================================= */
+.eu-image-field-wrap {
+    padding: 0.5rem 0;
+}
+
+.eu-image-preview {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    border: 1px solid #c3c4c7;
+    display: block;
+    object-fit: cover;
+}
+
+.eu-image-preview-wrap {
+    margin-bottom: 0.5rem;
+}
+
+.eu-image-field-wrap .button-primary {
+    background: #D4AF37 !important;
+    border-color: #b8960c !important;
+    color: #0B0B0B !important;
+    font-weight: 600;
+    box-shadow: none !important;
+}
+
+.eu-image-field-wrap .button-primary:hover {
+    background: #b8960c !important;
+    color: #0B0B0B !important;
+}
+
+.eu-image-field-wrap .button.isDestructive {
+    color: #d63638;
+    border-color: #d63638;
+}
+
+/* =========================================
+   META BOX HEADER STYLING
+   ========================================= */
+.postbox .hndle {
+    border-bottom: 2px solid #D4AF37;
+}
+
+#eu_field_group_umrah_package_fields .hndle,
+#eu_field_group_front_page_hero_fields .hndle,
+#eu_field_group_article_fields .hndle {
+    background: linear-gradient(135deg, #0B0B0B 0%, #1a1a1a 100%);
+    color: #D4AF37;
+    border-radius: 4px 4px 0 0;
+}
+
+#eu_field_group_umrah_package_fields .hndle h2,
+#eu_field_group_front_page_hero_fields .hndle h2,
+#eu_field_group_article_fields .hndle h2 {
+    color: #D4AF37 !important;
+    font-size: 0.9rem !important;
+}
+
+/* =========================================
+   RADIO GROUP LAYOUT
+   ========================================= */
+.eu-meta-field [type="radio"] {
+    cursor: pointer;
+    accent-color: #D4AF37;
+}
+
+.eu-meta-field [type="checkbox"] {
+    cursor: pointer;
+    accent-color: #D4AF37;
+    width: 16px;
+    height: 16px;
+}
+
+/* =========================================
+   SELECT STYLING
+   ========================================= */
+.eu-meta-field select {
+    appearance: auto;
+    background-image: none;
+    cursor: pointer;
+}
+
+/* =========================================
+   NUMBER INPUT WRAPPER
+   ========================================= */
+.eu-meta-field > div[style*="display:flex"] {
+    width: 100%;
+}
+
+.eu-meta-field > div[style*="display:flex"] input[type="number"] {
+    flex: 1;
+    border-radius: 0;
+}
+
+/* =========================================
+   RESPONSIVE META BOX
+   ========================================= */
+@media screen and (max-width: 782px) {
+    .eu-meta-box-wrap {
+        grid-template-columns: 1fr;
+    }
+
+    .eu-meta-field.full-width {
+        grid-column: 1;
+    }
+}
