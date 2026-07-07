@@ -169,10 +169,11 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
     $thumb_id    = get_post_thumbnail_id( $post_id );
     $type_terms  = get_the_terms( $post_id, 'package_type' );
     $type_name   = ! is_wp_error( $type_terms ) && $type_terms ? $type_terms[0]->name : 'Umrah';
+    $type_slug   = ! is_wp_error( $type_terms ) && $type_terms ? $type_terms[0]->slug : 'umrah';
 
     ob_start();
     ?>
-    <article class="eu-package-card<?php echo $is_featured ? ' is-featured' : ''; ?>" id="package-<?php echo $post_id; ?>">
+    <article class="eu-package-card<?php echo $is_featured ? ' is-featured' : ''; ?>" id="package-<?php echo $post_id; ?>" data-category="<?php echo esc_attr( $type_slug ); ?>">
         <?php if ( $is_featured ) : ?>
             <span class="eu-package-badge"><?php esc_html_e( 'Best Seller', EU_TEXT_DOMAIN ); ?></span>
         <?php endif; ?>

@@ -159,7 +159,7 @@ function eu_add_image_size_names( array $sizes ): array {
 add_filter( 'image_size_names_choose', 'eu_add_image_size_names' );
 
 /**
- * Override FSE template for single umrah_package with a PHP template.
+ * Override FSE template for single and archive umrah_package with PHP templates.
  *
  * FSE HTML templates cannot execute PHP, so for post types that require
  * dynamic server-side rendering (like umrah_package with postmeta), we
@@ -168,6 +168,11 @@ add_filter( 'image_size_names_choose', 'eu_add_image_size_names' );
 add_filter( 'template_include', function( string $template ): string {
     if ( is_singular( 'umrah_package' ) ) {
         $php_template = get_theme_file_path( 'single-umrah_package.php' );
+        if ( file_exists( $php_template ) ) {
+            return $php_template;
+        }
+    } elseif ( is_post_type_archive( 'umrah_package' ) ) {
+        $php_template = get_theme_file_path( 'archive-umrah_package.php' );
         if ( file_exists( $php_template ) ) {
             return $php_template;
         }
