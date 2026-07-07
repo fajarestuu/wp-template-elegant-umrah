@@ -26,6 +26,8 @@ define( 'EU_TEXT_DOMAIN', 'elegant-umrah' );
 $eu_includes = [
     '/inc/setup.php',
     '/inc/enqueue.php',
+    '/inc/i18n.php',             // Language detection, geo-IP, cookie, eu_t() helpers
+    '/inc/customizer.php',       // Customizer: default language + auto-detect setting
     '/inc/post-types.php',
     '/inc/taxonomies.php',
     '/inc/helpers.php',

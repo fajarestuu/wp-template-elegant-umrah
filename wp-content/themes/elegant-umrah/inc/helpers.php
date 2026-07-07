@@ -172,14 +172,14 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
     $pkg_type_val = get_post_meta( $post_id, 'eu_package_type', true );
     $type_slug    = $pkg_type_val ?: 'umrah';
     
-    // Map slug to name
+    // Map slug to name (translated)
     $type_labels = [
-        'umrah'      => 'Umrah',
-        'hajj'       => 'Hajj',
-        'umrah_plus' => 'Umrah Plus',
-        'family'     => 'Family Package',
-        'vip'        => 'VIP Premium',
-        'honeymoon'  => 'Honeymoon Umrah',
+        'umrah'      => eu_t( 'Umrah',           [ 'id' => 'Umrah' ] ),
+        'hajj'       => eu_t( 'Hajj',            [ 'id' => 'Haji' ] ),
+        'umrah_plus' => eu_t( 'Umrah Plus',      [ 'id' => 'Umrah Plus' ] ),
+        'family'     => eu_t( 'Family Package',  [ 'id' => 'Paket Keluarga' ] ),
+        'vip'        => eu_t( 'VIP Premium',     [ 'id' => 'VIP Premium' ] ),
+        'honeymoon'  => eu_t( 'Honeymoon Umrah', [ 'id' => 'Umrah Bulan Madu' ] ),
     ];
     $type_name = $type_labels[ $type_slug ] ?? ucfirst( str_replace( '_', ' ', $type_slug ) );
 

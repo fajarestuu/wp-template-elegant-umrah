@@ -25,12 +25,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php
 // Define package types for the filter (based on post meta eu_package_type)
 $package_types = [
-    'umrah'      => 'Umrah',
-    'hajj'       => 'Hajj',
-    'umrah_plus' => 'Umrah Plus',
-    'family'     => 'Family Package',
-    'vip'        => 'VIP Premium',
-    'honeymoon'  => 'Honeymoon Umrah',
+    'umrah'      => eu_t( 'Umrah',           [ 'id' => 'Umrah' ] ),
+    'hajj'       => eu_t( 'Hajj',            [ 'id' => 'Haji' ] ),
+    'umrah_plus' => eu_t( 'Umrah Plus',      [ 'id' => 'Umrah Plus' ] ),
+    'family'     => eu_t( 'Family Package',  [ 'id' => 'Paket Keluarga' ] ),
+    'vip'        => eu_t( 'VIP Premium',     [ 'id' => 'VIP Premium' ] ),
+    'honeymoon'  => eu_t( 'Honeymoon Umrah', [ 'id' => 'Umrah Bulan Madu' ] ),
 ];
 ?>
 
@@ -125,7 +125,7 @@ $package_types = [
         <!-- Filter Navigation -->
         <?php if ( ! empty( $package_types ) ) : ?>
             <nav class="eu-packages-filter" aria-label="Package Categories">
-                <button type="button" class="eu-filter-btn active" data-filter="all">All Packages</button>
+                <button type="button" class="eu-filter-btn active" data-filter="all"><?php eu_te( 'All Packages', [ 'id' => 'Semua Paket' ] ); ?></button>
                 <?php foreach ( $package_types as $slug => $name ) : ?>
                     <button type="button" class="eu-filter-btn" data-filter="<?php echo esc_attr( $slug ); ?>">
                         <?php echo esc_html( $name ); ?>

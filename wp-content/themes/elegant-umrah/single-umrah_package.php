@@ -129,7 +129,7 @@ while ( have_posts() ) :
             <div class="eu-pkg-sidebar-logo-icon" aria-hidden="true">🕌</div>
             <div class="eu-pkg-sidebar-logo-text">
                 <span class="eu-pkg-sidebar-logo-primary"><?php bloginfo( 'name' ); ?></span>
-                <span class="eu-pkg-sidebar-logo-secondary">Travel &amp; Pilgrimage</span>
+                <span class="eu-pkg-sidebar-logo-secondary"><?php eu_te( 'Travel & Pilgrimage', [ 'id' => 'Perjalanan & Ziarah' ] ); ?></span>
             </div>
         </a>
 
@@ -147,9 +147,9 @@ while ( have_posts() ) :
                 </div>
             <?php endif; ?>
             <?php if ( $is_sold_out ) : ?>
-                <span class="eu-pkg-sidebar-badge eu-pkg-sidebar-badge--sold">Sold Out</span>
+                <span class="eu-pkg-sidebar-badge eu-pkg-sidebar-badge--sold"><?php eu_te( 'Sold Out', [ 'id' => 'Habis Terjual' ] ); ?></span>
             <?php elseif ( $is_featured ) : ?>
-                <span class="eu-pkg-sidebar-badge">Best Seller</span>
+                <span class="eu-pkg-sidebar-badge"><?php eu_te( 'Best Seller', [ 'id' => 'Terlaris' ] ); ?></span>
             <?php endif; ?>
         </div>
 
@@ -171,7 +171,7 @@ while ( have_posts() ) :
                     <?php echo esc_html( $price_fmt ); ?>
                 </span>
             <?php endif; ?>
-            <span class="eu-pkg-sidebar-price-per">/ person</span>
+            <span class="eu-pkg-sidebar-price-per"><?php eu_te( '/ person', [ 'id' => '/ orang' ] ); ?></span>
         </div>
         <?php endif; ?>
 
@@ -179,32 +179,32 @@ while ( have_posts() ) :
         <?php if ( $is_sold_out ) : ?>
         <div class="eu-pkg-sidebar-ctas">
             <span class="eu-pkg-sidebar-btn-soldout" aria-disabled="true">
-                🚫 Package Sold Out
+                🚫 <?php eu_te( 'Package Sold Out', [ 'id' => 'Paket Habis' ] ); ?>
             </span>
             <a href="<?php echo esc_url( $wa_link ); ?>"
                target="_blank" rel="noopener noreferrer"
                class="eu-pkg-sidebar-btn-wa">
-                💬 Join Waitlist via WhatsApp
+                💬 <?php eu_te( 'Join Waitlist via WhatsApp', [ 'id' => 'Daftar Antrian via WhatsApp' ] ); ?>
             </a>
         </div>
         <p class="eu-pkg-sidebar-seats eu-pkg-sidebar-seats--sold">
-            <span aria-hidden="true">●</span> This package is fully booked
+            <span aria-hidden="true">●</span> <?php eu_te( 'This package is fully booked', [ 'id' => 'Paket ini sudah penuh' ] ); ?>
         </p>
         <?php else : ?>
         <div class="eu-pkg-sidebar-ctas">
             <a href="<?php echo esc_url( $book_url ); ?>" class="eu-pkg-sidebar-btn-primary">
-                🕋 Book This Package
+                🕋 <?php eu_te( 'Book This Package', [ 'id' => 'Pesan Paket Ini' ] ); ?>
             </a>
             <a href="<?php echo esc_url( $wa_link ); ?>"
                target="_blank" rel="noopener noreferrer"
                class="eu-pkg-sidebar-btn-wa">
-                💬 WhatsApp Us
+                💬 <?php eu_te( 'WhatsApp Us', [ 'id' => 'Hubungi Kami via WhatsApp' ] ); ?>
             </a>
         </div>
         <?php if ( $seats > 0 ) : ?>
         <p class="eu-pkg-sidebar-seats">
             <span class="eu-pkg-sidebar-seats-dot" aria-hidden="true">●</span>
-            <?php echo esc_html( $seats ); ?> seats remaining
+            <?php echo esc_html( $seats ); ?> <?php eu_te( 'seats remaining', [ 'id' => 'kursi tersisa' ] ); ?>
         </p>
         <?php endif; ?>
         <?php endif; ?>
@@ -227,7 +227,7 @@ while ( have_posts() ) :
         <!-- Additional country highlight -->
         <?php if ( $add_country ) : ?>
         <p class="eu-pkg-country-highlight">
-            🌍 Also visiting: <strong><?php echo esc_html( $add_country ); ?></strong>
+            🌍 <?php eu_te( 'Also visiting:', [ 'id' => 'Juga mengunjungi:' ] ); ?> <strong><?php echo esc_html( $add_country ); ?></strong>
         </p>
         <?php endif; ?>
 
@@ -235,18 +235,18 @@ while ( have_posts() ) :
         <?php if ( $price_fmt || $discount_fmt ) : ?>
         <div class="eu-pkg-price-block">
             <?php if ( $discount_fmt ) : ?>
-                <span class="eu-pkg-price-from">Special Price</span>
+                <span class="eu-pkg-price-from"><?php eu_te( 'Special Price', [ 'id' => 'Harga Spesial' ] ); ?></span>
                 <span class="eu-pkg-price-amount eu-pkg-price-amount--discount">
                     <?php echo esc_html( $discount_fmt ); ?>
                 </span>
                 <del class="eu-pkg-price-original" aria-label="Original price">
                     <?php echo esc_html( $price_fmt ); ?>
                 </del>
-                <span class="eu-pkg-price-per">/ person</span>
+                <span class="eu-pkg-price-per"><?php eu_te( '/ person', [ 'id' => '/ orang' ] ); ?></span>
             <?php else : ?>
-                <span class="eu-pkg-price-from">Starting from</span>
+                <span class="eu-pkg-price-from"><?php eu_te( 'Starting from', [ 'id' => 'Mulai dari' ] ); ?></span>
                 <span class="eu-pkg-price-amount"><?php echo esc_html( $price_fmt ); ?></span>
-                <span class="eu-pkg-price-per">/ person</span>
+                <span class="eu-pkg-price-per"><?php eu_te( '/ person', [ 'id' => '/ orang' ] ); ?></span>
             <?php endif; ?>
         </div>
         <?php endif; ?>
@@ -268,7 +268,7 @@ while ( have_posts() ) :
             <div class="eu-pkg-meta-item">
                 <span class="eu-pkg-meta-icon" aria-hidden="true">👳</span>
                 <div>
-                    <span class="eu-pkg-meta-label">Muthawwif</span>
+                    <span class="eu-pkg-meta-label"><?php eu_te( 'Muthawwif', [ 'id' => 'Muthawwif' ] ); ?></span>
                     <span class="eu-pkg-meta-value"><?php echo esc_html( $muthawwif ); ?></span>
                 </div>
             </div>
@@ -277,7 +277,7 @@ while ( have_posts() ) :
             <div class="eu-pkg-meta-item">
                 <span class="eu-pkg-meta-icon" aria-hidden="true">⏱</span>
                 <div>
-                    <span class="eu-pkg-meta-label">Duration</span>
+                    <span class="eu-pkg-meta-label"><?php eu_te( 'Duration', [ 'id' => 'Durasi' ] ); ?></span>
                     <span class="eu-pkg-meta-value"><?php echo esc_html( $duration ); ?></span>
                 </div>
             </div>
@@ -286,7 +286,7 @@ while ( have_posts() ) :
             <div class="eu-pkg-meta-item">
                 <span class="eu-pkg-meta-icon" aria-hidden="true">✈️</span>
                 <div>
-                    <span class="eu-pkg-meta-label">Airline</span>
+                    <span class="eu-pkg-meta-label"><?php eu_te( 'Airline', [ 'id' => 'Maskapai' ] ); ?></span>
                     <span class="eu-pkg-meta-value"><?php echo esc_html( $airline ); ?></span>
                 </div>
             </div>
@@ -297,7 +297,7 @@ while ( have_posts() ) :
 
         <!-- Hotels -->
         <?php if ( $hotel_makkah || $hotel_madinah ) : ?>
-        <h2 class="eu-pkg-section-title">Hotel Information</h2>
+        <h2 class="eu-pkg-section-title"><?php eu_te( 'Hotel Information', [ 'id' => 'Informasi Hotel' ] ); ?></h2>
         <div class="eu-pkg-hotels-grid">
             <?php if ( $hotel_makkah ) : ?>
             <div class="eu-pkg-hotel-card">
@@ -330,7 +330,7 @@ while ( have_posts() ) :
         <div class="eu-pkg-inclexcl-grid">
             <?php if ( $inclusions ) : ?>
             <div class="eu-pkg-inclexcl-col">
-                <h2 class="eu-pkg-section-title eu-pkg-section-title--incl">✓ Inclusions</h2>
+                <h2 class="eu-pkg-section-title eu-pkg-section-title--incl">✓ <?php eu_te( 'Inclusions', [ 'id' => 'Termasuk' ] ); ?></h2>
                 <ul class="eu-pkg-list eu-pkg-list--incl">
                     <?php foreach ( array_filter( array_map( 'trim', explode( "\n", $inclusions ) ) ) as $line ) : ?>
                     <li><?php echo esc_html( ltrim( $line, "✓✗\-•* \t" ) ); ?></li>
@@ -340,7 +340,7 @@ while ( have_posts() ) :
             <?php endif; ?>
             <?php if ( $exclusions ) : ?>
             <div class="eu-pkg-inclexcl-col">
-                <h2 class="eu-pkg-section-title eu-pkg-section-title--excl">✗ Exclusions</h2>
+                <h2 class="eu-pkg-section-title eu-pkg-section-title--excl">✗ <?php eu_te( 'Exclusions', [ 'id' => 'Tidak Termasuk' ] ); ?></h2>
                 <ul class="eu-pkg-list eu-pkg-list--excl">
                     <?php foreach ( array_filter( array_map( 'trim', explode( "\n", $exclusions ) ) ) as $line ) : ?>
                     <li><?php echo esc_html( ltrim( $line, "✓✗\-•* \t" ) ); ?></li>
@@ -355,7 +355,7 @@ while ( have_posts() ) :
         <?php if ( $add_tour ) : ?>
         <hr class="eu-pkg-divider">
         <div class="eu-pkg-addtour">
-            <h2 class="eu-pkg-section-title">🗺️ Additional Tour</h2>
+            <h2 class="eu-pkg-section-title">🗺️ <?php eu_te( 'Additional Tour', [ 'id' => 'Tur Tambahan' ] ); ?></h2>
             <p class="eu-pkg-addtour-value"><?php echo esc_html( $add_tour ); ?></p>
         </div>
         <?php endif; ?>
