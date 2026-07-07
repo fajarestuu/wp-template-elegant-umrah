@@ -160,13 +160,26 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
     $post_id     = $post_id ?? get_the_ID();
     $title       = get_the_title( $post_id );
     $permalink   = get_permalink( $post_id );
-    $price       = eu_get_package_price( $post_id );
     $duration    = eu_get_package_duration( $post_id );
     $departure   = eu_get_departure_date( $post_id );
-    $hotel       = get_post_meta( $post_id, 'eu_hotel_info', true );
     $airline     = get_post_meta( $post_id, 'eu_airline', true );
     $is_featured = eu_is_featured_package( $post_id );
+    $is_sold_out = (bool) get_post_meta( $post_id, 'eu_is_sold_out', true );
     $thumb_id    = get_post_thumbnail_id( $post_id );
+
+    // Currency & price from post meta
+    $currency      = get_post_meta( $post_id, 'eu_currency', true ) ?: 'Rp';
+    $raw_price     = get_post_meta( $post_id, 'eu_price', true );
+    $raw_discount  = get_post_meta( $post_id, 'eu_discount_price', true );
+    $symbols       = [ 'USD' => '$', 'Rp' => 'Rp', 'IDR' => 'Rp', 'MYR' => 'RM', 'SGD' => 'S$', 'SAR' => 'SAR ' ];
+    $symbol        = $symbols[ $currency ] ?? $currency . ' ';
+    $fmt_price     = $raw_price    ? $symbol . number_format( (float) $raw_price,    0, ',', '.' ) : '';
+    $fmt_discount  = $raw_discount ? $symbol . number_format( (float) $raw_discount, 0, ',', '.' ) : '';
+
+    // Hotel star rating — show highest of Makkah / Madinah
+    $mk_rat  = (int) get_post_meta( $post_id, 'eu_hotel_makkah_rating',  true );
+    $md_rat  = (int) get_post_meta( $post_id, 'eu_hotel_madinah_rating', true );
+    $max_rat = max( $mk_rat, $md_rat );  // 0 if both empty
     
     // Package type is saved in post meta, not taxonomy
     $pkg_type_val = get_post_meta( $post_id, 'eu_package_type', true );
@@ -191,12 +204,15 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
         <?php endif; ?>
 
         <?php if ( $thumb_id ) : ?>
-            <img src="<?php echo esc_url( eu_get_image_url( $thumb_id, 'eu-card' ) ); ?>"
+            <img src="<?php echo esc_url( wp_get_attachment_image_url( $thumb_id, 'full' ) ); ?>"
                  alt="<?php echo esc_attr( $title ); ?>"
                  class="eu-package-img"
                  loading="lazy">
         <?php else : ?>
-            <div class="eu-package-img-placeholder" aria-hidden="true">🕌</div>
+            <div class="eu-package-img-placeholder" aria-hidden="true">🗔</div>
+        <?php endif; ?>
+        <?php if ( $is_sold_out ) : ?>
+            <span class="eu-package-badge eu-package-badge--sold"><?php eu_te( 'Sold Out', [ 'id' => 'Habis Terjual' ] ); ?></span>
         <?php endif; ?>
 
         <div class="eu-package-body">
@@ -218,16 +234,19 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
                         <?php echo esc_html( $departure ); ?>
                     </span>
                 <?php endif; ?>
-                <?php if ( $hotel ) : ?>
-                    <span class="eu-package-meta-item">
-                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                        <?php echo esc_html( $hotel ); ?>
-                    </span>
-                <?php endif; ?>
                 <?php if ( $airline ) : ?>
                     <span class="eu-package-meta-item">
                         <svg viewBox="0 0 24 24"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19.5 2.5c-1.5-1.5-3.5-1.5-5 0L11 6 2.8 4.2L1 6l6 3L4 12l-2 1 3 3 3 3 1-2 3-3 3 6 2-1.8z"/></svg>
                         <?php echo esc_html( $airline ); ?>
+                    </span>
+                <?php endif; ?>
+                <?php if ( $max_rat > 0 ) : ?>
+                    <span class="eu-package-meta-item eu-package-meta-stars" aria-label="<?php echo esc_attr( $max_rat ); ?> stars">
+                        <?php
+                        for ( $i = 1; $i <= 5; $i++ ) {
+                            echo '<span class="eu-star' . ( $i <= $max_rat ? ' eu-star--filled' : '' ) . '" aria-hidden="true">★</span>';
+                        }
+                        ?>
                     </span>
                 <?php endif; ?>
             </div>
@@ -235,15 +254,20 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
             <div class="eu-package-divider"></div>
 
             <div class="eu-package-price-row">
-                <?php if ( $price ) : ?>
+                <?php if ( $fmt_price || $fmt_discount ) : ?>
                     <div class="eu-package-price">
-                        <span class="from"><?php esc_html_e( 'Starting from', EU_TEXT_DOMAIN ); ?></span>
-                        <span class="amount"><?php echo esc_html( $price ); ?></span>
-                        <span class="per"><?php esc_html_e( '/ person', EU_TEXT_DOMAIN ); ?></span>
+                        <span class="from"><?php eu_te( 'Starting from', [ 'id' => 'Mulai dari' ] ); ?></span>
+                        <?php if ( $fmt_discount ) : ?>
+                            <span class="amount amount--discount"><?php echo esc_html( $fmt_discount ); ?></span>
+                            <del class="amount amount--original"><?php echo esc_html( $fmt_price ); ?></del>
+                        <?php else : ?>
+                            <span class="amount"><?php echo esc_html( $fmt_price ); ?></span>
+                        <?php endif; ?>
+                        <span class="per"><?php eu_te( '/ person', [ 'id' => '/ orang' ] ); ?></span>
                     </div>
                 <?php endif; ?>
                 <a href="<?php echo esc_url( $permalink ); ?>" class="eu-package-card-btn">
-                    <?php esc_html_e( 'Book Now', EU_TEXT_DOMAIN ); ?>
+                    <?php eu_te( 'Book Now', [ 'id' => 'Pesan Sekarang' ] ); ?>
                 </a>
             </div>
         </div>
