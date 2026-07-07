@@ -698,6 +698,14 @@ p {
     font-weight: 600;
     letter-spacing: 0.15em;
     text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+/* Stars block — sits directly below the type label */
+.eu-package-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.05rem;
     margin-bottom: 0.5rem;
 }
 
@@ -738,7 +746,7 @@ p {
     gap: 0.1rem;
 }
 .eu-star {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #ccc;
     line-height: 1;
 }
@@ -752,15 +760,29 @@ p {
     color: #fff !important;
 }
 
-/* Discount price styles on card */
+/* Discount price layout — column so original sits above discount */
+.eu-package-price {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+/* Original (struck) price — small, elegant red, above discount */
+.amount--original {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #C0392B;        /* elegant crimson */
+    text-decoration: line-through;
+    opacity: 0.85;
+    order: -1;             /* forces it above amount--discount */
+    line-height: 1.2;
+}
+
+/* Discount price — prominent gold */
 .amount--discount {
     color: var(--wp--preset--color--secondary, #D4AF37);
     font-weight: 700;
-}
-.amount--original {
-    font-size: 0.8em;
-    color: #999;
-    margin-left: 0.25rem;
+    font-size: 1.15rem;
 }
 
 .eu-package-divider {

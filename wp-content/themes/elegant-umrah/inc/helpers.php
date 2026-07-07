@@ -217,6 +217,15 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
 
         <div class="eu-package-body">
             <div class="eu-package-type"><?php echo esc_html( $type_name ); ?></div>
+            <?php if ( $max_rat > 0 ) : ?>
+            <div class="eu-package-stars" aria-label="<?php echo esc_attr( $max_rat ); ?> stars">
+                <?php
+                for ( $i = 1; $i <= 5; $i++ ) {
+                    echo '<span class="eu-star' . ( $i <= $max_rat ? ' eu-star--filled' : '' ) . '" aria-hidden="true">★</span>';
+                }
+                ?>
+            </div>
+            <?php endif; ?>
             <h3 class="eu-package-name">
                 <a href="<?php echo esc_url( $permalink ); ?>"><?php echo esc_html( $title ); ?></a>
             </h3>
@@ -240,15 +249,6 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
                         <?php echo esc_html( $airline ); ?>
                     </span>
                 <?php endif; ?>
-                <?php if ( $max_rat > 0 ) : ?>
-                    <span class="eu-package-meta-item eu-package-meta-stars" aria-label="<?php echo esc_attr( $max_rat ); ?> stars">
-                        <?php
-                        for ( $i = 1; $i <= 5; $i++ ) {
-                            echo '<span class="eu-star' . ( $i <= $max_rat ? ' eu-star--filled' : '' ) . '" aria-hidden="true">★</span>';
-                        }
-                        ?>
-                    </span>
-                <?php endif; ?>
             </div>
 
             <div class="eu-package-divider"></div>
@@ -258,8 +258,8 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
                     <div class="eu-package-price">
                         <span class="from"><?php eu_te( 'Starting from', [ 'id' => 'Mulai dari' ] ); ?></span>
                         <?php if ( $fmt_discount ) : ?>
-                            <span class="amount amount--discount"><?php echo esc_html( $fmt_discount ); ?></span>
                             <del class="amount amount--original"><?php echo esc_html( $fmt_price ); ?></del>
+                            <span class="amount amount--discount"><?php echo esc_html( $fmt_discount ); ?></span>
                         <?php else : ?>
                             <span class="amount"><?php echo esc_html( $fmt_price ); ?></span>
                         <?php endif; ?>
