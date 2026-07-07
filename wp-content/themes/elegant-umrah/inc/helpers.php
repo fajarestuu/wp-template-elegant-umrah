@@ -167,9 +167,21 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
     $airline     = get_post_meta( $post_id, 'eu_airline', true );
     $is_featured = eu_is_featured_package( $post_id );
     $thumb_id    = get_post_thumbnail_id( $post_id );
-    $type_terms  = get_the_terms( $post_id, 'package_type' );
-    $type_name   = ! is_wp_error( $type_terms ) && $type_terms ? $type_terms[0]->name : 'Umrah';
-    $type_slug   = ! is_wp_error( $type_terms ) && $type_terms ? $type_terms[0]->slug : 'umrah';
+    
+    // Package type is saved in post meta, not taxonomy
+    $pkg_type_val = get_post_meta( $post_id, 'eu_package_type', true );
+    $type_slug    = $pkg_type_val ?: 'umrah';
+    
+    // Map slug to name
+    $type_labels = [
+        'umrah'      => 'Umrah',
+        'hajj'       => 'Hajj',
+        'umrah_plus' => 'Umrah Plus',
+        'family'     => 'Family Package',
+        'vip'        => 'VIP Premium',
+        'honeymoon'  => 'Honeymoon Umrah',
+    ];
+    $type_name = $type_labels[ $type_slug ] ?? ucfirst( str_replace( '_', ' ', $type_slug ) );
 
     ob_start();
     ?>

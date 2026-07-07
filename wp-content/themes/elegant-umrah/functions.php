@@ -96,11 +96,11 @@ function eu_ajax_filter_packages(): void {
     ];
 
     if ( $package_type && $package_type !== 'all' ) {
-        $args['tax_query'] = [
+        $args['meta_query'] = [
             [
-                'taxonomy' => 'package_type',
-                'field'    => 'slug',
-                'terms'    => $package_type,
+                'key'     => 'eu_package_type',
+                'value'   => $package_type,
+                'compare' => '=',
             ],
         ];
     }

@@ -23,11 +23,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php block_template_part( 'header' ); ?>
 
 <?php
-// Fetch terms for the filter
-$terms = get_terms( [
-    'taxonomy'   => 'package_type',
-    'hide_empty' => true,
-] );
+// Define package types for the filter (based on post meta eu_package_type)
+$package_types = [
+    'umrah'      => 'Umrah',
+    'hajj'       => 'Hajj',
+    'umrah_plus' => 'Umrah Plus',
+    'family'     => 'Family Package',
+    'vip'        => 'VIP Premium',
+    'honeymoon'  => 'Honeymoon Umrah',
+];
 ?>
 
 <style>
@@ -119,12 +123,12 @@ $terms = get_terms( [
     <div class="eu-archive-container">
         
         <!-- Filter Navigation -->
-        <?php if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) : ?>
+        <?php if ( ! empty( $package_types ) ) : ?>
             <nav class="eu-packages-filter" aria-label="Package Categories">
                 <button type="button" class="eu-filter-btn active" data-filter="all">All Packages</button>
-                <?php foreach ( $terms as $term ) : ?>
-                    <button type="button" class="eu-filter-btn" data-filter="<?php echo esc_attr( $term->slug ); ?>">
-                        <?php echo esc_html( $term->name ); ?>
+                <?php foreach ( $package_types as $slug => $name ) : ?>
+                    <button type="button" class="eu-filter-btn" data-filter="<?php echo esc_attr( $slug ); ?>">
+                        <?php echo esc_html( $name ); ?>
                     </button>
                 <?php endforeach; ?>
             </nav>
