@@ -229,7 +229,7 @@ add_action( 'admin_enqueue_scripts', function ( string $hook ): void {
 // 6. HIDDEN DATA CELLS (for JS to read current values per row)
 // ─────────────────────────────────────────────────────────────────────────────
 
-// We piggyback on the title column action to inject hidden spans
+// We piggyback on the title column action to inject hidden spans and add Duplicate link
 add_filter( 'post_row_actions', function ( array $actions, \WP_Post $post ): array {
     if ( 'umrah_package' !== $post->post_type ) return $actions;
 
@@ -238,7 +238,40 @@ add_filter( 'post_row_actions', function ( array $actions, \WP_Post $post ): arr
     $discount = esc_attr( get_post_meta( $post->ID, 'eu_discount_price', true ) ?: '' );
     $sold_out = get_post_meta( $post->ID, 'eu_is_sold_out', true ) ? '1' : '0';
 
-    // Inject hidden data attributes into the row via a hidden span in row actions
+    // 1. Add "Duplicate" action right next to "Quick Edit"
+    if ( current_user_can( 'edit_post', $post->ID ) ) {
+        $duplicate_url = wp_nonce_url(
+            admin_url( 'admin.php?action=eu_duplicate_package&post=' . $post->ID ),
+            'eu_duplicate_package_' . $post->ID
+        );
+
+        $duplicate_action = sprintf(
+            '<a href="%s" aria-label="%s">%s</a>',
+            esc_url( $duplicate_url ),
+            /* translators: %s: Package title */
+            esc_attr( sprintf( __( 'Duplicate &#8220;%s&#8221;', 'elegant-umrah' ), $post->post_title ) ),
+            __( 'Duplicate', 'elegant-umrah' )
+        );
+
+        $new_actions = [];
+        $inserted    = false;
+
+        foreach ( $actions as $key => $action_html ) {
+            $new_actions[ $key ] = $action_html;
+            if ( 'inline hide-if-no-js' === $key ) {
+                $new_actions['duplicate'] = $duplicate_action;
+                $inserted = true;
+            }
+        }
+
+        if ( ! $inserted ) {
+            $new_actions['duplicate'] = $duplicate_action;
+        }
+
+        $actions = $new_actions;
+    }
+
+    // 2. Inject hidden data attributes into the row via a hidden span in row actions
     // (WordPress does not have a built-in row data hook, this is the standard pattern)
     $actions['_eu_data'] = sprintf(
         '<span class="eu-row-data hidden"
@@ -252,6 +285,141 @@ add_filter( 'post_row_actions', function ( array $actions, \WP_Post $post ): arr
 
     return $actions;
 }, 10, 2 );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 6b. DUPLICATE PACKAGE HANDLERS
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Duplicate an Umrah Package post.
+ *
+ * Copies post fields, all custom meta (including prices, hotels, itineraries, etc.),
+ * and custom taxonomy terms. Sets status to 'draft'.
+ *
+ * @param int $post_id Post ID to duplicate.
+ * @return int|\WP_Error New post ID on success, WP_Error on failure.
+ */
+function eu_duplicate_package( int $post_id ) {
+    $post = get_post( $post_id );
+    if ( ! $post || 'umrah_package' !== $post->post_type ) {
+        return new \WP_Error( 'invalid_post', __( 'Invalid package.', 'elegant-umrah' ) );
+    }
+
+    $current_user    = wp_get_current_user();
+    $new_post_author = ( $current_user && $current_user->exists() ) ? $current_user->ID : $post->post_author;
+
+    /* translators: %s: original post title */
+    $new_title = sprintf( __( '%s (Copy)', 'elegant-umrah' ), $post->post_title );
+
+    $new_post_data = [
+        'post_author'    => $new_post_author,
+        'post_date'      => current_time( 'mysql' ),
+        'post_date_gmt'  => get_gmt_from_date( current_time( 'mysql' ) ),
+        'post_content'   => $post->post_content,
+        'post_title'     => $new_title,
+        'post_excerpt'   => $post->post_excerpt,
+        'post_status'    => 'draft',
+        'comment_status' => $post->comment_status,
+        'ping_status'    => $post->ping_status,
+        'post_name'      => '', // Let WordPress generate fresh slug on publish
+        'post_type'      => 'umrah_package',
+        'menu_order'     => $post->menu_order,
+    ];
+
+    $new_post_id = wp_insert_post( $new_post_data, true );
+    if ( is_wp_error( $new_post_id ) ) {
+        return $new_post_id;
+    }
+
+    // 1. Copy custom fields (postmeta)
+    $meta_data = get_post_custom( $post_id );
+    if ( ! empty( $meta_data ) ) {
+        $ignore_meta = [ '_edit_lock', '_edit_last' ];
+        foreach ( $meta_data as $meta_key => $values ) {
+            if ( in_array( $meta_key, $ignore_meta, true ) ) {
+                continue;
+            }
+            foreach ( $values as $value ) {
+                $val = maybe_unserialize( $value );
+                add_post_meta( $new_post_id, $meta_key, $val );
+            }
+        }
+    }
+
+    // 2. Copy taxonomies (e.g. destination, package_type)
+    $taxonomies = get_object_taxonomies( 'umrah_package' );
+    foreach ( $taxonomies as $taxonomy ) {
+        $term_ids = wp_get_object_terms( $post_id, $taxonomy, [ 'fields' => 'ids' ] );
+        if ( ! is_wp_error( $term_ids ) && ! empty( $term_ids ) ) {
+            wp_set_object_terms( $new_post_id, array_map( 'intval', $term_ids ), $taxonomy );
+        }
+    }
+
+    return $new_post_id;
+}
+
+/**
+ * Handle admin action for duplicating an umrah package.
+ */
+add_action( 'admin_action_eu_duplicate_package', function () {
+    if ( empty( $_GET['post'] ) ) {
+        wp_die( esc_html__( 'No package to duplicate was provided.', 'elegant-umrah' ) );
+    }
+
+    $post_id = (int) $_GET['post'];
+    check_admin_referer( 'eu_duplicate_package_' . $post_id );
+
+    if ( ! current_user_can( 'edit_posts' ) || ! current_user_can( 'edit_post', $post_id ) ) {
+        wp_die( esc_html__( 'You do not have permission to duplicate this package.', 'elegant-umrah' ) );
+    }
+
+    $new_id = eu_duplicate_package( $post_id );
+
+    if ( is_wp_error( $new_id ) ) {
+        wp_die( esc_html( $new_id->get_error_message() ) );
+    }
+
+    $redirect_url = add_query_arg(
+        [
+            'post_type'  => 'umrah_package',
+            'duplicated' => $new_id,
+        ],
+        admin_url( 'edit.php' )
+    );
+
+    wp_safe_redirect( $redirect_url );
+    exit;
+} );
+
+/**
+ * Display dismissible admin notice upon successful package duplication.
+ */
+add_action( 'admin_notices', function () {
+    global $pagenow, $post_type;
+
+    if ( 'edit.php' !== $pagenow || 'umrah_package' !== $post_type || empty( $_GET['duplicated'] ) ) {
+        return;
+    }
+
+    $duplicated_id = (int) $_GET['duplicated'];
+    $edit_link     = get_edit_post_link( $duplicated_id );
+    $package_title = get_the_title( $duplicated_id );
+
+    ?>
+    <div class="notice notice-success is-dismissible">
+        <p>
+            <?php
+            printf(
+                /* translators: 1: Package title, 2: Edit URL */
+                __( 'Package <strong>%1$s</strong> successfully duplicated as draft. %2$s', 'elegant-umrah' ),
+                esc_html( $package_title ),
+                $edit_link ? '<a href="' . esc_url( $edit_link ) . '">' . esc_html__( 'Edit Package', 'elegant-umrah' ) . ' &rarr;</a>' : ''
+            );
+            ?>
+        </p>
+    </div>
+    <?php
+} );
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 7. CSS
