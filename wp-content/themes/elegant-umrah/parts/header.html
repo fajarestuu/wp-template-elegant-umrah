@@ -1,5 +1,5 @@
-<!-- wp:group {"tagName":"header","className":"eu-site-header","style":{"position":{"type":"sticky","top":"0px"},"color":{"background":"#0B0B0B"}}} -->
-<header class="wp-block-group eu-site-header" style="background-color:#0B0B0B;position:sticky;top:0px">
+<!-- wp:group {"tagName":"header","className":"eu-site-header","layout":{"type":"default"}} -->
+<header class="wp-block-group eu-site-header">
 
     <!-- wp:group {"className":"eu-header-inner","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"nowrap"}} -->
     <div class="wp-block-group eu-header-inner">
@@ -16,11 +16,11 @@
         </a>
         <!-- /wp:html -->
 
-        <!-- wp:navigation {"ref":null,"textColor":"white","overlayMenu":"never","className":"eu-nav","layout":{"type":"flex","setCascadingProperties":true,"justifyContent":"right","orientation":"horizontal","flexWrap":"nowrap"}} -->
-        <!-- wp:navigation-link {"label":"Home","url":"/","className":""} /-->
-        <!-- wp:navigation-link {"label":"Packages","url":"/packages","className":""} /-->
-        <!-- wp:navigation-link {"label":"Articles","url":"/articles","className":""} /-->
-        <!-- wp:navigation-link {"label":"About","url":"/about","className":""} /-->
+        <!-- wp:navigation {"textColor":"white","overlayMenu":"never","className":"eu-nav","layout":{"type":"flex","setCascadingProperties":true,"justifyContent":"right","orientation":"horizontal","flexWrap":"nowrap"}} -->
+        <!-- wp:navigation-link {"label":"Home","url":"/"} /-->
+        <!-- wp:navigation-link {"label":"Packages","url":"/packages"} /-->
+        <!-- wp:navigation-link {"label":"Articles","url":"/articles"} /-->
+        <!-- wp:navigation-link {"label":"About","url":"/about"} /-->
         <!-- wp:navigation-link {"label":"Contact Us","url":"/contact","className":"eu-nav-cta"} /-->
         <!-- /wp:navigation -->
 
@@ -37,10 +37,10 @@
                 <li class="menu-item-has-children">
                     <a href="/packages">Packages</a>
                     <ul class="sub-menu">
-                        <li><a href="/packages/umrah">Umrah Packages</a></li>
-                        <li><a href="/packages/hajj">Hajj Packages</a></li>
-                        <li><a href="/packages/vip">VIP Packages</a></li>
-                        <li><a href="/packages/family">Family Packages</a></li>
+                        <li><a href="/packages/?type=umrah">Umrah Packages</a></li>
+                        <li><a href="/packages/?type=hajj">Hajj Packages</a></li>
+                        <li><a href="/packages/?type=vip">VIP Packages</a></li>
+                        <li><a href="/packages/?type=family">Family Packages</a></li>
                     </ul>
                 </li>
                 <li><a href="/articles">Articles</a></li>

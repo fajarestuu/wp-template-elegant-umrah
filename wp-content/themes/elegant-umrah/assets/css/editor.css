@@ -5,10 +5,7 @@
  * @package ElegantUmrah
  */
 
-/* Load Google Fonts in editor */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-
-/* Apply Poppins to editor */
+/* Apply Poppins to editor (loaded via theme.json fontFace) */
 .editor-styles-wrapper,
 .editor-styles-wrapper p,
 .editor-styles-wrapper h1,

@@ -1,9 +1,9 @@
-<!-- wp:group {"tagName":"footer","className":"eu-footer","style":{"color":{"background":"#080808"}}} -->
-<footer class="wp-block-group eu-footer" style="background-color:#080808">
-<!-- wp:group {"className":"eu-footer-inner","style":{"spacing":{"padding":{"top":"4rem","right":"1.5rem","bottom":"2rem","left":"1.5rem"}}},"layout":{"type":"constrained","contentSize":"1200px"}} -->
-<div class="wp-block-group eu-footer-inner" style="padding-top:4rem;padding-right:1.5rem;padding-bottom:2rem;padding-left:1.5rem">
-<!-- wp:columns {"className":"eu-footer-grid","style":{"spacing":{"blockGap":{"top":"2.5rem","left":"2.5rem"},"margin":{"bottom":"3rem"}}}} -->
-<div class="wp-block-columns eu-footer-grid" style="margin-bottom:3rem">
+<!-- wp:group {"tagName":"footer","className":"eu-footer","layout":{"type":"default"}} -->
+<footer class="wp-block-group eu-footer">
+<!-- wp:group {"className":"eu-footer-inner","layout":{"type":"constrained","contentSize":"1200px"}} -->
+<div class="wp-block-group eu-footer-inner">
+<!-- wp:columns {"className":"eu-footer-grid"} -->
+<div class="wp-block-columns eu-footer-grid">
 <!-- wp:column {"className":"eu-footer-brand eu-footer-col"} -->
 <div class="wp-block-column eu-footer-brand eu-footer-col">
 <!-- wp:html -->
@@ -13,11 +13,19 @@
 </div>
 <p style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1.25rem">Premium Umrah &amp; Hajj Travel</p>
 <p style="font-size:0.875rem;line-height:1.75;color:rgba(255,255,255,0.55);margin-bottom:1.5rem;max-width:400px">We are a licensed and trusted Umrah &amp; Hajj travel agency dedicated to providing pilgrims with a spiritually enriching and comfortable journey to the Holy Land since 2005.</p>
-<div class="eu-footer-social" style="display:flex;gap:1rem;flex-wrap:wrap">
-<a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style="color:#D4AF37;text-decoration:none">FB</a>
-<a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style="color:#D4AF37;text-decoration:none">IG</a>
-<a href="https://wa.me/" target="_blank" rel="noopener noreferrer" style="color:#D4AF37;text-decoration:none">WA</a>
-<a href="https://youtube.com" target="_blank" rel="noopener noreferrer" style="color:#D4AF37;text-decoration:none">YT</a>
+<div class="eu-footer-social">
+<a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="eu-social-link" aria-label="Facebook">
+<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+</a>
+<a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="eu-social-link" aria-label="Instagram">
+<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+</a>
+<a href="https://wa.me/621234567890" target="_blank" rel="noopener noreferrer" class="eu-social-link" aria-label="WhatsApp">
+<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</a>
+<a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="eu-social-link" aria-label="YouTube">
+<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+</a>
 </div>
 <!-- /wp:html -->
 </div>
@@ -26,12 +34,12 @@
 <!-- wp:column {"className":"eu-footer-col"} -->
 <div class="wp-block-column eu-footer-col">
 <!-- wp:html -->
-<h4 style="color:#FFFFFF;font-size:0.9rem;font-weight:700;letter-spacing:0.05em;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:2px solid #D4AF37;display:inline-block">Quick Links</h4>
+<h4 style="color:#FFFFFF;font-size:0.9rem;font-weight:700;letter-spacing:0.05em;margin-bottom:1.25rem;padding-bottom:0.75rem;display:inline-block">Quick Links</h4>
 <!-- /wp:html -->
 <!-- wp:navigation {"className":"eu-footer-links","overlayMenu":"never","layout":{"type":"flex","orientation":"vertical"}} -->
 <!-- wp:navigation-link {"label":"Home","url":"/"} /-->
 <!-- wp:navigation-link {"label":"Umrah Packages","url":"/packages"} /-->
-<!-- wp:navigation-link {"label":"Hajj Packages","url":"/packages/hajj"} /-->
+<!-- wp:navigation-link {"label":"Hajj Packages","url":"/packages/?type=hajj"} /-->
 <!-- wp:navigation-link {"label":"About Us","url":"/about"} /-->
 <!-- wp:navigation-link {"label":"Articles","url":"/articles"} /-->
 <!-- wp:navigation-link {"label":"Contact","url":"/contact"} /-->
@@ -42,14 +50,14 @@
 <!-- wp:column {"className":"eu-footer-col"} -->
 <div class="wp-block-column eu-footer-col">
 <!-- wp:html -->
-<h4 style="color:#FFFFFF;font-size:0.9rem;font-weight:700;letter-spacing:0.05em;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:2px solid #D4AF37;display:inline-block">Our Packages</h4>
-<ul class="eu-footer-links" style="color:rgba(255,255,255,0.55);font-size:0.85rem;list-style:none;padding:0;margin:0;line-height:2">
-<li><a href="/packages/umrah" style="color:inherit;text-decoration:none">Umrah Regular</a></li>
-<li><a href="/packages/umrah-plus" style="color:inherit;text-decoration:none">Umrah Plus</a></li>
-<li><a href="/packages/vip" style="color:inherit;text-decoration:none">Umrah VIP</a></li>
-<li><a href="/packages/family" style="color:inherit;text-decoration:none">Family Package</a></li>
-<li><a href="/packages/hajj" style="color:inherit;text-decoration:none">Hajj Package</a></li>
-<li><a href="/packages/honeymoon" style="color:inherit;text-decoration:none">Honeymoon Umrah</a></li>
+<h4 style="color:#FFFFFF;font-size:0.9rem;font-weight:700;letter-spacing:0.05em;margin-bottom:1.25rem;padding-bottom:0.75rem;display:inline-block">Our Packages</h4>
+<ul class="eu-footer-links" style="color:rgba(255,255,255,0.65);font-size:0.85rem;list-style:none;padding:0;margin:0;line-height:2">
+<li><a href="/packages/?type=umrah" style="color:inherit;text-decoration:none">Umrah Regular</a></li>
+<li><a href="/packages/?type=umrah_plus" style="color:inherit;text-decoration:none">Umrah Plus</a></li>
+<li><a href="/packages/?type=vip" style="color:inherit;text-decoration:none">Umrah VIP</a></li>
+<li><a href="/packages/?type=family" style="color:inherit;text-decoration:none">Family Package</a></li>
+<li><a href="/packages/?type=hajj" style="color:inherit;text-decoration:none">Hajj Package</a></li>
+<li><a href="/packages/?type=honeymoon" style="color:inherit;text-decoration:none">Honeymoon Umrah</a></li>
 </ul>
 <!-- /wp:html -->
 </div>
@@ -58,7 +66,7 @@
 <!-- wp:column {"className":"eu-footer-col"} -->
 <div class="wp-block-column eu-footer-col">
 <!-- wp:html -->
-<h4 style="color:#FFFFFF;font-size:0.9rem;font-weight:700;letter-spacing:0.05em;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:2px solid #D4AF37;display:inline-block">Contact Info</h4>
+<h4 style="color:#FFFFFF;font-size:0.9rem;font-weight:700;letter-spacing:0.05em;margin-bottom:1.25rem;padding-bottom:0.75rem;display:inline-block">Contact Info</h4>
 <div class="eu-footer-contact" style="font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.8">
 <p style="margin:0 0 0.5rem">📍 Jl. Sudirman No. 99, Jakarta Pusat 10270, Indonesia</p>
 <p style="margin:0 0 0.5rem">📞 <a href="tel:+621234567890" style="color:inherit;text-decoration:none">+62 123 456 7890</a></p>
@@ -78,11 +86,11 @@
 
 <!-- wp:html -->
 <div class="eu-footer-bottom" style="border-top:1px solid rgba(255,255,255,0.07);padding-top:2rem;display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:0.75rem">
-<p style="font-size:0.8rem;color:rgba(255,255,255,0.3);margin:0">
+<p style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin:0">
 © <span id="eu-year">2026</span> Elegant Umrah &amp; Hajj Travel. All rights reserved. Licensed by Kemenag RI.
 </p>
 </div>
-<button id="eu-scroll-top" aria-label="Scroll to top" title="Scroll to top" style="position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;background:#D4AF37;color:#0B0B0B;border:none;border-radius:50%;font-size:1.2rem;cursor:pointer;opacity:0;pointer-events:none;transition:all 0.3s ease;z-index:99">↑</button>
+<button id="eu-scroll-top" aria-label="Scroll to top" title="Scroll to top">↑</button>
 <!-- /wp:html -->
 </div>
 <!-- /wp:group -->

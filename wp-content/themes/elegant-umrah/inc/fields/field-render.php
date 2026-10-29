@@ -46,7 +46,7 @@ function eu_render_field( int $post_id, array $field ): void {
 
     // Field
     match ( $type ) {
-        'text', 'url', 'email', 'date', 'color' => eu_render_input( $field, $meta_key, $value ),
+        'text', 'url', 'email', 'date', 'month', 'color' => eu_render_input( $field, $meta_key, $value ),
         'number'                                 => eu_render_number_input( $field, $meta_key, $value ),
         'textarea'                               => eu_render_textarea( $field, $meta_key, $value ),
         'select'                                 => eu_render_select( $field, $meta_key, $value ),

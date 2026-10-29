@@ -9,6 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
+// Pre-render block template parts before wp_head() so block styles enqueue properly
+$eu_header_html = do_blocks( '<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->' );
+$eu_footer_html = do_blocks( '<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->' );
+
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -20,18 +24,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php wp_body_open(); ?>
 
 <!-- Header template part -->
-<?php block_template_part( 'header' ); ?>
+<?php echo $eu_header_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <?php
-// Define package types for the filter (based on post meta eu_package_type)
-$package_types = [
-    'umrah'      => eu_t( 'Umrah',           [ 'id' => 'Umrah' ] ),
-    'hajj'       => eu_t( 'Hajj',            [ 'id' => 'Haji' ] ),
-    'umrah_plus' => eu_t( 'Umrah Plus',      [ 'id' => 'Umrah Plus' ] ),
-    'family'     => eu_t( 'Family Package',  [ 'id' => 'Paket Keluarga' ] ),
-    'vip'        => eu_t( 'VIP Premium',     [ 'id' => 'VIP Premium' ] ),
-    'honeymoon'  => eu_t( 'Honeymoon Umrah', [ 'id' => 'Umrah Bulan Madu' ] ),
-];
+// Define package types for the filter (dynamically from taxonomy / settings)
+$package_types = eu_get_package_types();
+
+$active_filter = isset( $_GET['type'] ) ? sanitize_key( wp_unslash( $_GET['type'] ) ) : 'all';
+if ( 'all' !== $active_filter && ! array_key_exists( $active_filter, $package_types ) ) {
+    $active_filter = 'all';
+}
+$active_month = isset( $_GET['month'] ) ? sanitize_text_field( wp_unslash( $_GET['month'] ) ) : '';
 ?>
 
 <style>
@@ -116,18 +119,32 @@ $package_types = [
     
     <!-- Hero Section -->
     <header class="eu-archive-hero">
-        <h1 class="eu-archive-hero-title"><?php esc_html_e( 'Premium Umrah & Hajj Packages', 'elegant-umrah' ); ?></h1>
-        <p class="eu-archive-hero-subtitle"><?php esc_html_e( 'Discover our meticulously crafted journeys designed for your spiritual comfort and peace of mind.', 'elegant-umrah' ); ?></p>
+        <h1 class="eu-archive-hero-title"><?php eu_te( 'Premium Umrah & Hajj Packages', [ 'id' => 'Paket Umrah & Haji Premium' ] ); ?></h1>
+        <p class="eu-archive-hero-subtitle"><?php eu_te( 'Discover our meticulously crafted journeys designed for your spiritual comfort and peace of mind.', [ 'id' => 'Temukan perjalanan ibadah yang dirancang khusus untuk kenyamanan dan ketenangan hati Anda.' ] ); ?></p>
     </header>
 
     <div class="eu-archive-container">
         
+        <?php eu_render_breadcrumbs(); ?>
+        
+        <?php if ( ! empty( $active_month ) ) : 
+            $all_months = eu_get_available_departure_months();
+            $month_label = $all_months[ $active_month ] ?? date_i18n( 'F Y', strtotime( $active_month . '-01' ) );
+        ?>
+            <div class="eu-archive-active-filters">
+                <div class="eu-filter-badge">
+                    <span>📅 <?php eu_te( 'Departure:', [ 'id' => 'Keberangkatan:' ] ); ?> <strong><?php echo esc_html( $month_label ); ?></strong></span>
+                    <a href="<?php echo esc_url( remove_query_arg( 'month' ) ); ?>" class="eu-filter-badge-remove" title="<?php eu_te( 'Clear month filter', [ 'id' => 'Hapus filter bulan' ] ); ?>" aria-label="<?php eu_te( 'Clear month filter', [ 'id' => 'Hapus filter bulan' ] ); ?>">&times;</a>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- Filter Navigation -->
         <?php if ( ! empty( $package_types ) ) : ?>
             <nav class="eu-packages-filter" aria-label="Package Categories">
-                <button type="button" class="eu-filter-btn active" data-filter="all"><?php eu_te( 'All Packages', [ 'id' => 'Semua Paket' ] ); ?></button>
+                <button type="button" class="eu-filter-btn<?php echo 'all' === $active_filter ? ' active' : ''; ?>" data-filter="all"><?php eu_te( 'All Packages', [ 'id' => 'Semua Paket' ] ); ?></button>
                 <?php foreach ( $package_types as $slug => $name ) : ?>
-                    <button type="button" class="eu-filter-btn" data-filter="<?php echo esc_attr( $slug ); ?>">
+                    <button type="button" class="eu-filter-btn<?php echo $slug === $active_filter ? ' active' : ''; ?>" data-filter="<?php echo esc_attr( $slug ); ?>">
                         <?php echo esc_html( $name ); ?>
                     </button>
                 <?php endforeach; ?>
@@ -147,8 +164,8 @@ $package_types = [
                 ?>
                 <div class="eu-no-results">
                     <span style="font-size: 3rem;">🕋</span>
-                    <h3><?php esc_html_e( 'No packages available right now.', 'elegant-umrah' ); ?></h3>
-                    <p><?php esc_html_e( 'Please check back later or contact our support team.', 'elegant-umrah' ); ?></p>
+                    <h3><?php eu_te( 'No packages available right now.', [ 'id' => 'Belum ada paket yang tersedia saat ini.' ] ); ?></h3>
+                    <p><?php eu_te( 'Please check back later or contact our support team.', [ 'id' => 'Silakan kembali lagi nanti atau hubungi tim layanan kami.' ] ); ?></p>
                 </div>
                 <?php
             endif;
@@ -166,7 +183,7 @@ $package_types = [
     </div>
 </div>
 
-<?php block_template_part( 'footer' ); ?>
+<?php echo $eu_footer_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 <?php wp_footer(); ?>
 </body>
 </html>

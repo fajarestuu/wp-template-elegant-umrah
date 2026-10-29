@@ -218,34 +218,6 @@
     }
 
     // =========================================
-    // CATEGORY FILTER (Archive / Packages)
-    // =========================================
-    const filterBtns = document.querySelectorAll('.eu-filter-btn');
-
-    if (filterBtns.length) {
-        filterBtns.forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                // Remove active from all
-                filterBtns.forEach(function (b) { b.classList.remove('active'); });
-                this.classList.add('active');
-
-                const filter = this.getAttribute('data-filter');
-                const cards  = document.querySelectorAll('[data-category]');
-
-                cards.forEach(function (card) {
-                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
-                        card.style.display = '';
-                        setTimeout(function () { card.style.opacity = '1'; }, 50);
-                    } else {
-                        card.style.opacity = '0';
-                        setTimeout(function () { card.style.display = 'none'; }, 300);
-                    }
-                });
-            });
-        });
-    }
-
-    // =========================================
     // UTILITY: THROTTLE
     // =========================================
     function throttle(fn, delay) {
@@ -260,20 +232,6 @@
     }
 
     // =========================================
-    // TOUCH SWIPE for mobile (packages)
-    // =========================================
-    let touchStartX = 0;
-    let touchEndX   = 0;
-
-    document.addEventListener('touchstart', function (e) {
-        touchStartX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    document.addEventListener('touchend', function (e) {
-        touchEndX = e.changedTouches[0].screenX;
-    }, { passive: true });
-
-    // =========================================
     // INIT on DOMContentLoaded
     // =========================================
     document.addEventListener('DOMContentLoaded', function () {
@@ -281,4 +239,263 @@
         document.documentElement.classList.add('js-ready');
     });
 
+    // =========================================
+    // READING PROGRESS BAR (Single Post)
+    // =========================================
+    const readProgress = document.getElementById('eu-read-progress');
+
+    if (readProgress) {
+        const updateProgress = throttle(function () {
+            const scrollTop    = window.scrollY || window.pageYOffset;
+            const docHeight    = document.documentElement.scrollHeight - window.innerHeight;
+            const pct          = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+            readProgress.style.width = pct.toFixed(1) + '%';
+        }, 50);
+
+        window.addEventListener('scroll', updateProgress, { passive: true });
+    }
+
+    // =========================================
+    // ARTICLE CATEGORY FILTER (AJAX)
+    // =========================================
+    const articleFilterBtns = document.querySelectorAll('.eu-article-filter-btn');
+    const articleGrid        = document.getElementById('eu-article-grid');
+    const articlesLoading    = document.getElementById('eu-articles-loading');
+    const loadMoreBtn        = document.getElementById('eu-articles-load-more');
+    const articlesContainer  = document.getElementById('eu-articles-container');
+
+    if (articleFilterBtns.length && articleGrid && typeof euArticles !== 'undefined') {
+
+        let currentCategory = 'all';
+        let currentPage     = 1;
+        let maxPages        = 1;
+        let isFetching      = false;
+
+        // Detect total pages from initial load (set via data attr if available)
+        if (articlesContainer) {
+            maxPages = parseInt(articlesContainer.dataset.maxPages || '1', 10);
+        }
+
+        // Show/hide load-more button
+        function updateLoadMore() {
+            if (!loadMoreBtn) return;
+            if (currentPage < maxPages) {
+                loadMoreBtn.style.display = 'inline-flex';
+                loadMoreBtn.dataset.paged = currentPage + 1;
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+
+        // Fetch articles via AJAX
+        function fetchArticles(category, page, append) {
+            if (isFetching) return;
+            isFetching = true;
+
+            if (articlesLoading) articlesLoading.style.display = 'flex';
+            if (articleGrid)     articleGrid.style.opacity = append ? '1' : '0.4';
+
+            const formData = new FormData();
+            formData.append('action',   euArticles.action);
+            formData.append('nonce',    euArticles.nonce);
+            formData.append('category', category);
+            formData.append('paged',    page);
+
+            fetch(euArticles.ajaxUrl, {
+                method: 'POST',
+                body:   formData,
+                credentials: 'same-origin',
+            })
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (!data.success) throw new Error(euArticles.i18n.error);
+
+                if (append) {
+                    articleGrid.insertAdjacentHTML('beforeend', data.data.html);
+                } else {
+                    articleGrid.innerHTML = data.data.html;
+                    // scroll to grid smoothly
+                    const offset = (articleGrid.getBoundingClientRect().top + window.scrollY) - 140;
+                    window.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+                }
+
+                maxPages = data.data.max_pages || 1;
+                currentPage = data.data.paged || page;
+                updateLoadMore();
+
+                // Re-observe new cards for animation
+                const newCards = articleGrid.querySelectorAll('.eu-article-card:not(.eu-animate-in)');
+                if ('IntersectionObserver' in window) {
+                    const obs = new IntersectionObserver(function (entries) {
+                        entries.forEach(function (entry) {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('eu-animate-in');
+                                obs.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.08 });
+                    newCards.forEach(function (card) {
+                        card.style.opacity    = '0';
+                        card.style.transform  = 'translateY(16px)';
+                        obs.observe(card);
+                    });
+                }
+            })
+            .catch(function (err) {
+                console.error('[EU Articles]', err);
+            })
+            .finally(function () {
+                isFetching = false;
+                if (articlesLoading) articlesLoading.style.display = 'none';
+                if (articleGrid)     articleGrid.style.opacity = '1';
+            });
+        }
+
+        // Filter button clicks
+        articleFilterBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                articleFilterBtns.forEach(function (b) {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+
+                currentCategory = this.dataset.category || 'all';
+                currentPage     = 1;
+
+                // Hide featured card if filtering
+                const featured = document.querySelector('.eu-article-featured');
+                if (featured) {
+                    featured.style.display = currentCategory === 'all' ? '' : 'none';
+                }
+
+                fetchArticles(currentCategory, 1, false);
+            });
+        });
+
+        // Load more button click
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function () {
+                fetchArticles(currentCategory, currentPage + 1, true);
+            });
+        }
+    }
+
+    // =========================================
+    // COPY LINK BUTTON (Single Post)
+    // =========================================
+    const copyLinkBtn = document.getElementById('eu-copy-link');
+
+    if (copyLinkBtn && navigator.clipboard) {
+        copyLinkBtn.addEventListener('click', function () {
+            const url = this.dataset.url || window.location.href;
+            navigator.clipboard.writeText(url).then(function () {
+                copyLinkBtn.style.background = '#D4AF37';
+                copyLinkBtn.style.color      = '#0B0B0B';
+                setTimeout(function () {
+                    copyLinkBtn.style.background = '';
+                    copyLinkBtn.style.color      = '';
+                }, 1500);
+            });
+        });
+    }
+
+    // =========================================
+    // HERO SEARCH FORM (CLEAN URL SUBMISSION)
+    // =========================================
+    const heroSearchForm = document.querySelector('.eu-hero-search-form');
+    if (heroSearchForm) {
+        heroSearchForm.addEventListener('submit', function () {
+            const monthInput = this.querySelector('[name="month"]');
+            const typeInput  = this.querySelector('[name="type"]');
+
+            if (monthInput && !monthInput.value) {
+                monthInput.disabled = true;
+            }
+            if (typeInput && (!typeInput.value || typeInput.value === 'all')) {
+                typeInput.disabled = true;
+            }
+        });
+
+        // Re-enable if user navigates back (bfcache)
+        window.addEventListener('pageshow', function () {
+            const inputs = heroSearchForm.querySelectorAll('select');
+            inputs.forEach(function (input) {
+                input.disabled = false;
+            });
+        });
+    }
+
+    // =========================================
+    // HERO SLIDESHOW CONTROLLER
+    // =========================================
+    const heroMedia = document.querySelector('.eu-hero-media');
+    if (heroMedia) {
+        const slides = heroMedia.querySelectorAll('.eu-hero-slide');
+        const dots   = heroMedia.querySelectorAll('.eu-hero-dot');
+        const count  = slides.length;
+
+        if (count > 1) {
+            const intervalSec = parseInt(heroMedia.getAttribute('data-interval') || '5', 10);
+            const intervalMs  = Math.max(3000, intervalSec * 1000);
+            let currentIdx    = 0;
+            let slideTimer    = null;
+
+            function goToSlide(index) {
+                currentIdx = (index + count) % count;
+                slides.forEach(function (slide, i) {
+                    if (i === currentIdx) {
+                        slide.classList.add('is-active');
+                    } else {
+                        slide.classList.remove('is-active');
+                    }
+                });
+                dots.forEach(function (dot, i) {
+                    if (i === currentIdx) {
+                        dot.classList.add('is-active');
+                    } else {
+                        dot.classList.remove('is-active');
+                    }
+                });
+            }
+
+            function startTimer() {
+                stopTimer();
+                slideTimer = setInterval(function () {
+                    goToSlide(currentIdx + 1);
+                }, intervalMs);
+            }
+
+            function stopTimer() {
+                if (slideTimer) {
+                    clearInterval(slideTimer);
+                    slideTimer = null;
+                }
+            }
+
+            // Dot click event
+            dots.forEach(function (dot) {
+                dot.addEventListener('click', function () {
+                    const targetIdx = parseInt(this.getAttribute('data-slide-index') || '0', 10);
+                    goToSlide(targetIdx);
+                    startTimer();
+                });
+            });
+
+            // Pause on tab hidden, resume on tab visible
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    stopTimer();
+                } else {
+                    startTimer();
+                }
+            });
+
+            // Start auto slideshow
+            startTimer();
+        }
+    }
+
 })();
+

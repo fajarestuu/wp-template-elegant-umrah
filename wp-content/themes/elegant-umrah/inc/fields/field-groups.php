@@ -110,10 +110,10 @@ function eu_register_all_field_groups(): void {
                 'type'         => 'select',
                 'name'         => 'eu_package_type',
                 'label'        => __( 'Package Type', 'elegant-umrah' ),
-                'instructions' => __( 'Select the type of pilgrimage package', 'elegant-umrah' ),
+                'instructions' => __( 'Select or manage package types under Umrah Packages > Package Types', 'elegant-umrah' ),
                 'allow_null'   => true,
                 'null_label'   => '— Select Type —',
-                'choices'      => [
+                'choices'      => function_exists( 'eu_get_package_types' ) ? eu_get_package_types() : [
                     'umrah'      => 'Umrah',
                     'hajj'       => 'Hajj',
                     'umrah_plus' => 'Umrah Plus',

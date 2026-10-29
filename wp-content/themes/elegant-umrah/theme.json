@@ -428,21 +428,6 @@
             "name": "front-page",
             "title": "Front Page",
             "postTypes": ["page"]
-        },
-        {
-            "name": "page-packages",
-            "title": "Packages Page",
-            "postTypes": ["page"]
-        },
-        {
-            "name": "page-contact",
-            "title": "Contact Page",
-            "postTypes": ["page"]
-        },
-        {
-            "name": "page-about",
-            "title": "About Page",
-            "postTypes": ["page"]
         }
     ],
     "blockPatterns": []

@@ -74,6 +74,19 @@ function eu_get_field_type_defaults( string $type ): array {
             'width'        => '50',
         ],
 
+        // Month (YYYY-MM)
+        'month' => [
+            'type'         => 'month',
+            'label'        => '',
+            'name'         => '',
+            'default'      => '',
+            'instructions' => '',
+            'required'     => false,
+            'min'          => '',
+            'max'          => '',
+            'width'        => '50',
+        ],
+
         // URL
         'url' => [
             'type'         => 'url',
@@ -202,7 +215,7 @@ function eu_sanitize_field_value( $value, array $field ) {
         'text', 'url', 'email', 'color' => sanitize_text_field( $value ),
         'textarea'                       => sanitize_textarea_field( $value ),
         'number'                         => is_numeric( $value ) ? (float) $value : 0,
-        'date'                           => sanitize_text_field( $value ),
+        'date', 'month'                  => sanitize_text_field( $value ),
         'select', 'radio'                => sanitize_text_field( $value ),
         'checkbox'                       => (bool) $value,
         'image'                          => absint( $value ),

@@ -35,6 +35,7 @@
 /* Inputs */
 .eu-meta-field input[type="text"],
 .eu-meta-field input[type="date"],
+.eu-meta-field input[type="month"],
 .eu-meta-field input[type="number"],
 .eu-meta-field input[type="url"],
 .eu-meta-field input[type="email"],

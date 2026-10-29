@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 function eu_setup() {
     // Text domain
-    load_theme_textdomain( EU_TEXT_DOMAIN, EU_DIR . '/languages' );
+    load_theme_textdomain( 'elegant-umrah', EU_DIR . '/languages' );
 
     // Core supports
     add_theme_support( 'title-tag' );
@@ -46,6 +46,9 @@ function eu_setup() {
     // FSE / Full Site Editing
     add_theme_support( 'block-templates' );
 
+    // Yoast SEO Features
+    add_theme_support( 'yoast-seo-breadcrumbs' );
+
     // Image sizes
     add_image_size( 'eu-thumb',   640, 400,  true );
     add_image_size( 'eu-card',    400, 280,  true );
@@ -54,10 +57,10 @@ function eu_setup() {
 
     // Navigation Menus
     register_nav_menus( [
-        'primary'    => __( 'Primary Navigation', EU_TEXT_DOMAIN ),
-        'footer'     => __( 'Footer Navigation', EU_TEXT_DOMAIN ),
-        'social'     => __( 'Social Links', EU_TEXT_DOMAIN ),
-        'packages'   => __( 'Packages Menu', EU_TEXT_DOMAIN ),
+        'primary'    => __( 'Primary Navigation', 'elegant-umrah' ),
+        'footer'     => __( 'Footer Navigation', 'elegant-umrah' ),
+        'social'     => __( 'Social Links', 'elegant-umrah' ),
+        'packages'   => __( 'Packages Menu', 'elegant-umrah' ),
     ] );
 
     // Content width
@@ -77,27 +80,27 @@ add_action( 'after_setup_theme', 'eu_setup' );
 function eu_register_sidebars() {
     $sidebars = [
         [
-            'name'          => __( 'Blog Sidebar', EU_TEXT_DOMAIN ),
+            'name'          => __( 'Blog Sidebar', 'elegant-umrah' ),
             'id'            => 'eu-blog-sidebar',
-            'description'   => __( 'Widgets in the blog/post sidebar area.', EU_TEXT_DOMAIN ),
+            'description'   => __( 'Widgets in the blog/post sidebar area.', 'elegant-umrah' ),
             'before_widget' => '<div id="%1$s" class="eu-widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h4 class="eu-widget-title">',
             'after_title'   => '</h4>',
         ],
         [
-            'name'          => __( 'Footer Column 1', EU_TEXT_DOMAIN ),
+            'name'          => __( 'Footer Column 1', 'elegant-umrah' ),
             'id'            => 'eu-footer-1',
-            'description'   => __( 'Footer Widget Area 1', EU_TEXT_DOMAIN ),
+            'description'   => __( 'Footer Widget Area 1', 'elegant-umrah' ),
             'before_widget' => '<div id="%1$s" class="eu-footer-widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h4 class="eu-footer-widget-title">',
             'after_title'   => '</h4>',
         ],
         [
-            'name'          => __( 'Footer Column 2', EU_TEXT_DOMAIN ),
+            'name'          => __( 'Footer Column 2', 'elegant-umrah' ),
             'id'            => 'eu-footer-2',
-            'description'   => __( 'Footer Widget Area 2', EU_TEXT_DOMAIN ),
+            'description'   => __( 'Footer Widget Area 2', 'elegant-umrah' ),
             'before_widget' => '<div id="%1$s" class="eu-footer-widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h4 class="eu-footer-widget-title">',
@@ -150,10 +153,10 @@ add_action( 'init', 'eu_clean_wp_head' );
  */
 function eu_add_image_size_names( array $sizes ): array {
     return array_merge( $sizes, [
-        'eu-thumb'  => __( 'EU Thumbnail (640x400)', EU_TEXT_DOMAIN ),
-        'eu-card'   => __( 'EU Card (400x280)', EU_TEXT_DOMAIN ),
-        'eu-hero'   => __( 'EU Hero (1920x1080)', EU_TEXT_DOMAIN ),
-        'eu-square' => __( 'EU Square (600x600)', EU_TEXT_DOMAIN ),
+        'eu-thumb'  => __( 'EU Thumbnail (640x400)', 'elegant-umrah' ),
+        'eu-card'   => __( 'EU Card (400x280)', 'elegant-umrah' ),
+        'eu-hero'   => __( 'EU Hero (1920x1080)', 'elegant-umrah' ),
+        'eu-square' => __( 'EU Square (600x600)', 'elegant-umrah' ),
     ] );
 }
 add_filter( 'image_size_names_choose', 'eu_add_image_size_names' );

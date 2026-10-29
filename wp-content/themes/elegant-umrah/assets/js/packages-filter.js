@@ -8,23 +8,36 @@
 (function () {
     'use strict';
 
-    const filterBtns    = document.querySelectorAll('.eu-filter-btn[data-filter]');
-    const packagesGrid  = document.querySelector('.eu-packages-grid, .eu-packages-loop');
+    const filterBtns   = document.querySelectorAll('.eu-filter-btn[data-filter]');
+    const packagesGrid = document.querySelector('.eu-packages-grid, .eu-packages-loop');
 
     if (!filterBtns.length || !packagesGrid) return;
 
-    let currentFilter = 'all';
+    const activeBtn   = document.querySelector('.eu-filter-btn.active[data-filter]');
+    let currentFilter = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
     let isFiltering   = false;
 
     filterBtns.forEach(function (btn) {
         btn.addEventListener('click', function () {
-            if (isFiltering || this.getAttribute('data-filter') === currentFilter) return;
+            const selectedFilter = this.getAttribute('data-filter') || 'all';
+            if (isFiltering || selectedFilter === currentFilter) return;
 
-            currentFilter = this.getAttribute('data-filter');
+            currentFilter = selectedFilter;
 
             // Update active state
             filterBtns.forEach(function (b) { b.classList.remove('active'); });
             this.classList.add('active');
+
+            // Update URL query param without reloading page
+            if (window.history && window.history.replaceState) {
+                const url = new URL(window.location.href);
+                if (currentFilter === 'all') {
+                    url.searchParams.delete('type');
+                } else {
+                    url.searchParams.set('type', currentFilter);
+                }
+                window.history.replaceState({}, '', url.toString());
+            }
 
             filterPackages(currentFilter);
         });
@@ -37,53 +50,19 @@
         packagesGrid.style.opacity = '0.5';
         packagesGrid.style.transition = 'opacity 0.3s';
 
-        if (filter === 'all') {
-            // Show all
-            const allCards = packagesGrid.querySelectorAll('[data-category], .eu-package-card');
-            allCards.forEach(function (card) {
-                card.style.display = '';
-                setTimeout(function () {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 50);
-            });
-            packagesGrid.style.opacity = '1';
-            isFiltering = false;
-            return;
-        }
-
-        // Filter by category
-        const allCards = packagesGrid.querySelectorAll('[data-category]');
-
-        if (allCards.length) {
-            // Client-side filtering
-            allCards.forEach(function (card) {
-                const cardCat = card.getAttribute('data-category');
-                if (cardCat === filter) {
-                    card.style.display = '';
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(10px)';
-                    setTimeout(function () {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                        card.style.transition = 'opacity 0.3s, transform 0.3s';
-                    }, 50);
-                } else {
-                    card.style.opacity = '0';
-                    setTimeout(function () {
-                        card.style.display = 'none';
-                    }, 300);
-                }
-            });
-
-            packagesGrid.style.opacity = '1';
-            isFiltering = false;
-        } else {
-            // AJAX filtering via WP Query
+        // Prefer server-side AJAX filtering so packages across all pages are included
+        if (typeof euTheme !== 'undefined' && euTheme.ajaxUrl) {
             const formData = new FormData();
             formData.append('action', 'eu_filter_packages');
             formData.append('nonce', euTheme.nonce);
             formData.append('package_type', filter);
+
+            // Pass active month filter if present in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeMonth = urlParams.get('month');
+            if (activeMonth) {
+                formData.append('month', activeMonth);
+            }
 
             fetch(euTheme.ajaxUrl, {
                 method: 'POST',
@@ -114,7 +93,32 @@
                 packagesGrid.style.opacity = '1';
                 isFiltering = false;
             });
+            return;
         }
+
+        // Fallback: Client-side filtering when AJAX config is unavailable
+        const allCards = packagesGrid.querySelectorAll('[data-category]');
+        allCards.forEach(function (card) {
+            const cardCat = card.getAttribute('data-category');
+            if (filter === 'all' || cardCat === filter) {
+                card.style.display = '';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(10px)';
+                setTimeout(function () {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                    card.style.transition = 'opacity 0.3s, transform 0.3s';
+                }, 50);
+            } else {
+                card.style.opacity = '0';
+                setTimeout(function () {
+                    card.style.display = 'none';
+                }, 300);
+            }
+        });
+
+        packagesGrid.style.opacity = '1';
+        isFiltering = false;
     }
 
 })();

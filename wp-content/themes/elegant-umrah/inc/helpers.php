@@ -75,22 +75,67 @@ function eu_excerpt( ?int $post_id = null, int $words = 20 ): void {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Get formatted package price
+ * Format a raw price string with currency symbol and locale-aware thousands separator.
+ * Safely handles strings like "22.500.000", "22,500,000", or "1500.50".
  */
-function eu_get_package_price( ?int $post_id = null, string $currency = 'USD' ): string {
-    $post_id = $post_id ?? get_the_ID();
-    $price   = get_post_meta( $post_id, 'eu_price', true );
-    if ( ! $price ) return '';
+function eu_format_price( string $raw, string $currency = 'Rp' ): string {
+    $raw = trim( $raw );
+    if ( '' === $raw ) return '';
 
-    // If already has currency symbol, return as-is
-    if ( preg_match( '/[^0-9.,]/', $price ) ) {
-        return esc_html( $price );
+    // Remove everything except digits, dots, and commas
+    $numeric = preg_replace( '/[^\d.,]/', '', $raw );
+    if ( '' === $numeric ) return esc_html( $raw );
+
+    $numeric = str_replace( ',', '.', $numeric );
+    $parts   = explode( '.', $numeric );
+
+    if ( count( $parts ) > 2 ) {
+        // Multiple dots -> all are thousands separators (e.g. 22.500.000)
+        $numeric = implode( '', $parts );
+    } elseif ( count( $parts ) === 2 && strlen( $parts[1] ) === 3 ) {
+        // Single dot followed by 3 digits -> thousands separator (e.g. 1.500)
+        $numeric = $parts[0] . $parts[1];
     }
 
-    $symbols = [ 'USD' => '$', 'IDR' => 'Rp', 'MYR' => 'RM', 'SGD' => 'S$', 'SAR' => 'SAR' ];
+    $number = (float) $numeric;
+
+    if ( 'USD' === strtoupper( $currency ) ) {
+        $decimals = ( floor( $number ) != $number ) ? 2 : 0;
+        return 'USD ' . number_format( $number, $decimals, '.', ',' );
+    }
+
+    $symbols = [ 'Rp' => 'Rp ', 'IDR' => 'Rp ', 'MYR' => 'RM ', 'SGD' => 'S$ ', 'SAR' => 'SAR ' ];
     $symbol  = $symbols[ $currency ] ?? $currency . ' ';
 
-    return $symbol . number_format( (float) $price, 0, ',', '.' );
+    return $symbol . number_format( $number, 0, ',', '.' );
+}
+
+/**
+ * Get configured WhatsApp number (digits only) and build a wa.me URL.
+ */
+function eu_get_whatsapp_url( string $message = '' ): string {
+    $phone = get_theme_mod( 'eu_whatsapp_number', '621234567890' );
+    $phone = preg_replace( '/\D+/', '', (string) $phone ) ?: '621234567890';
+    $url   = 'https://wa.me/' . $phone;
+    if ( '' !== $message ) {
+        $url .= '?text=' . rawurlencode( $message );
+    }
+    return $url;
+}
+
+/**
+ * Get formatted package price
+ */
+function eu_get_package_price( ?int $post_id = null, string $currency = '' ): string {
+    $post_id  = $post_id ?? get_the_ID();
+    $price    = (string) get_post_meta( $post_id, 'eu_price', true );
+    if ( ! $price ) return '';
+
+    if ( ! $currency ) {
+        $currency = (string) ( get_post_meta( $post_id, 'eu_currency', true ) ?: 'Rp' );
+    }
+
+    return eu_format_price( $price, $currency );
 }
 
 /**
@@ -146,6 +191,113 @@ function eu_get_package_inclusions( ?int $post_id = null ): array {
 }
 
 /**
+ * Get package types array (dynamically fetched from package_type taxonomy, fallback to default)
+ */
+function eu_get_package_types(): array {
+    $types = [];
+
+    // Check taxonomy terms
+    $terms = get_terms( [
+        'taxonomy'   => 'package_type',
+        'hide_empty' => false,
+        'orderby'    => 'term_id',
+        'order'      => 'ASC',
+    ] );
+
+    if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+        foreach ( $terms as $term ) {
+            $types[ $term->slug ] = $term->name;
+        }
+    }
+
+    // Default fallback if no terms exist
+    if ( empty( $types ) ) {
+        $types = [
+            'umrah'      => eu_t( 'Umrah',           [ 'id' => 'Umrah' ] ),
+            'hajj'       => eu_t( 'Hajj',            [ 'id' => 'Haji' ] ),
+            'umrah_plus' => eu_t( 'Umrah Plus',      [ 'id' => 'Umrah Plus' ] ),
+            'family'     => eu_t( 'Family Package',  [ 'id' => 'Paket Keluarga' ] ),
+            'vip'        => eu_t( 'VIP Premium',     [ 'id' => 'VIP Premium' ] ),
+            'honeymoon'  => eu_t( 'Honeymoon Umrah', [ 'id' => 'Umrah Bulan Madu' ] ),
+        ];
+    }
+
+    return $types;
+}
+
+/**
+ * Get package type label for a specific post or slug
+ */
+function eu_get_package_type_label( ?int $post_id = null, string $fallback_slug = '' ): string {
+    $types = eu_get_package_types();
+
+    if ( $post_id ) {
+        // First check term assignment
+        $terms = get_the_terms( $post_id, 'package_type' );
+        if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+            return $terms[0]->name;
+        }
+
+        // Second check meta
+        $slug = (string) get_post_meta( $post_id, 'eu_package_type', true );
+        if ( $slug && isset( $types[ $slug ] ) ) {
+            return $types[ $slug ];
+        }
+    }
+
+    if ( $fallback_slug && isset( $types[ $fallback_slug ] ) ) {
+        return $types[ $fallback_slug ];
+    }
+
+    return $fallback_slug ? ucfirst( str_replace( [ '-', '_' ], ' ', $fallback_slug ) ) : '';
+}
+
+/**
+ * Get distinct departure months available from packages
+ * Returns array of [ 'YYYY-MM' => 'Month YYYY' ]
+ */
+function eu_get_available_departure_months(): array {
+    global $wpdb;
+
+    $dates = $wpdb->get_col( "
+        SELECT DISTINCT meta_value 
+        FROM {$wpdb->postmeta} pm
+        JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+        WHERE p.post_type = 'umrah_package' 
+          AND p.post_status = 'publish'
+          AND pm.meta_key IN ('eu_departure_date', 'eu_estimate_month') 
+          AND pm.meta_value != ''
+    " );
+
+    $months = [];
+
+    if ( ! empty( $dates ) ) {
+        foreach ( $dates as $d ) {
+            $d = trim( $d );
+            $ym = substr( $d, 0, 7 ); // 'YYYY-MM'
+            if ( preg_match( '/^\d{4}-\d{2}$/', $ym ) ) {
+                $time = strtotime( $ym . '-01' );
+                if ( $time ) {
+                    $months[ $ym ] = date_i18n( 'F Y', $time );
+                }
+            }
+        }
+        ksort( $months );
+    }
+
+    // If no dates exist in DB yet, generate next 6 upcoming months as graceful preview
+    if ( empty( $months ) ) {
+        for ( $i = 0; $i < 6; $i++ ) {
+            $time = strtotime( "+{$i} month" );
+            $ym   = date( 'Y-m', $time );
+            $months[ $ym ] = date_i18n( 'F Y', $time );
+        }
+    }
+
+    return $months;
+}
+
+/**
  * Check if package is featured
  */
 function eu_is_featured_package( ?int $post_id = null ): bool {
@@ -161,6 +313,9 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
     $title       = get_the_title( $post_id );
     $permalink   = get_permalink( $post_id );
     $duration    = eu_get_package_duration( $post_id );
+    if ( $duration && is_numeric( trim( $duration ) ) ) {
+        $duration = trim( $duration ) . ' ' . eu_t( 'Days', [ 'id' => 'Hari' ] );
+    }
     $departure   = eu_get_departure_date( $post_id );
     $airline     = get_post_meta( $post_id, 'eu_airline', true );
     $is_featured = eu_is_featured_package( $post_id );
@@ -168,51 +323,44 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
     $thumb_id    = get_post_thumbnail_id( $post_id );
 
     // Currency & price from post meta
-    $currency      = get_post_meta( $post_id, 'eu_currency', true ) ?: 'Rp';
-    $raw_price     = get_post_meta( $post_id, 'eu_price', true );
-    $raw_discount  = get_post_meta( $post_id, 'eu_discount_price', true );
-    $symbols       = [ 'USD' => '$', 'Rp' => 'Rp', 'IDR' => 'Rp', 'MYR' => 'RM', 'SGD' => 'S$', 'SAR' => 'SAR ' ];
-    $symbol        = $symbols[ $currency ] ?? $currency . ' ';
-    $fmt_price     = $raw_price    ? $symbol . number_format( (float) $raw_price,    0, ',', '.' ) : '';
-    $fmt_discount  = $raw_discount ? $symbol . number_format( (float) $raw_discount, 0, ',', '.' ) : '';
+    $currency      = (string) ( get_post_meta( $post_id, 'eu_currency', true ) ?: 'Rp' );
+    $raw_price     = (string) get_post_meta( $post_id, 'eu_price', true );
+    $raw_discount  = (string) get_post_meta( $post_id, 'eu_discount_price', true );
+    $fmt_price     = $raw_price    ? eu_format_price( $raw_price, $currency )    : '';
+    $fmt_discount  = $raw_discount ? eu_format_price( $raw_discount, $currency ) : '';
 
     // Hotel star rating — show highest of Makkah / Madinah
     $mk_rat  = (int) get_post_meta( $post_id, 'eu_hotel_makkah_rating',  true );
     $md_rat  = (int) get_post_meta( $post_id, 'eu_hotel_madinah_rating', true );
     $max_rat = max( $mk_rat, $md_rat );  // 0 if both empty
     
-    // Package type is saved in post meta, not taxonomy
-    $pkg_type_val = get_post_meta( $post_id, 'eu_package_type', true );
-    $type_slug    = $pkg_type_val ?: 'umrah';
-    
-    // Map slug to name (translated)
-    $type_labels = [
-        'umrah'      => eu_t( 'Umrah',           [ 'id' => 'Umrah' ] ),
-        'hajj'       => eu_t( 'Hajj',            [ 'id' => 'Haji' ] ),
-        'umrah_plus' => eu_t( 'Umrah Plus',      [ 'id' => 'Umrah Plus' ] ),
-        'family'     => eu_t( 'Family Package',  [ 'id' => 'Paket Keluarga' ] ),
-        'vip'        => eu_t( 'VIP Premium',     [ 'id' => 'VIP Premium' ] ),
-        'honeymoon'  => eu_t( 'Honeymoon Umrah', [ 'id' => 'Umrah Bulan Madu' ] ),
-    ];
-    $type_name = $type_labels[ $type_slug ] ?? ucfirst( str_replace( '_', ' ', $type_slug ) );
+    // Package type: check taxonomy terms first, fallback to post meta
+    $terms = get_the_terms( $post_id, 'package_type' );
+    if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+        $type_slug = $terms[0]->slug;
+        $type_name = $terms[0]->name;
+    } else {
+        $pkg_type_val = get_post_meta( $post_id, 'eu_package_type', true );
+        $type_slug    = $pkg_type_val ?: 'umrah';
+        $type_name    = eu_get_package_type_label( $post_id, $type_slug );
+    }
 
     ob_start();
     ?>
-    <article class="eu-package-card<?php echo $is_featured ? ' is-featured' : ''; ?>" id="package-<?php echo $post_id; ?>" data-category="<?php echo esc_attr( $type_slug ); ?>">
-        <?php if ( $is_featured ) : ?>
-            <span class="eu-package-badge"><?php esc_html_e( 'Best Seller', EU_TEXT_DOMAIN ); ?></span>
+    <article class="eu-package-card<?php echo $is_featured ? ' is-featured' : ''; ?>" id="package-<?php echo (int) $post_id; ?>" data-category="<?php echo esc_attr( $type_slug ); ?>">
+        <?php if ( $is_sold_out ) : ?>
+            <span class="eu-package-badge eu-package-badge--sold"><?php eu_te( 'Sold Out', [ 'id' => 'Habis Terjual' ] ); ?></span>
+        <?php elseif ( $is_featured ) : ?>
+            <span class="eu-package-badge"><?php eu_te( 'Best Seller', [ 'id' => 'Terlaris' ] ); ?></span>
         <?php endif; ?>
 
         <?php if ( $thumb_id ) : ?>
-            <img src="<?php echo esc_url( wp_get_attachment_image_url( $thumb_id, 'full' ) ); ?>"
+            <img src="<?php echo esc_url( wp_get_attachment_image_url( $thumb_id, 'eu-thumb' ) ); ?>"
                  alt="<?php echo esc_attr( $title ); ?>"
                  class="eu-package-img"
                  loading="lazy">
         <?php else : ?>
-            <div class="eu-package-img-placeholder" aria-hidden="true">🗔</div>
-        <?php endif; ?>
-        <?php if ( $is_sold_out ) : ?>
-            <span class="eu-package-badge eu-package-badge--sold"><?php eu_te( 'Sold Out', [ 'id' => 'Habis Terjual' ] ); ?></span>
+            <div class="eu-package-img-placeholder" aria-hidden="true">🕋</div>
         <?php endif; ?>
 
         <div class="eu-package-body">
@@ -265,10 +413,20 @@ function eu_render_package_card( ?int $post_id = null, bool $echo = true ): stri
                         <?php endif; ?>
                         <span class="per"><?php eu_te( '/ person', [ 'id' => '/ orang' ] ); ?></span>
                     </div>
+                <?php else : ?>
+                    <div class="eu-package-price">
+                        <span class="amount" style="font-size:1.05rem;color:var(--wp--preset--color--secondary)"><?php eu_te( 'Contact Us', [ 'id' => 'Hubungi Kami' ] ); ?></span>
+                    </div>
                 <?php endif; ?>
-                <a href="<?php echo esc_url( $permalink ); ?>" class="eu-package-card-btn">
-                    <?php eu_te( 'Book Now', [ 'id' => 'Pesan Sekarang' ] ); ?>
-                </a>
+                <?php if ( $is_sold_out ) : ?>
+                    <span class="eu-package-card-btn eu-package-card-btn--sold">
+                        <?php eu_te( 'Sold Out', [ 'id' => 'Habis Terjual' ] ); ?>
+                    </span>
+                <?php else : ?>
+                    <a href="<?php echo esc_url( $permalink ); ?>" class="eu-package-card-btn">
+                        <?php eu_te( 'Book Now', [ 'id' => 'Pesan Sekarang' ] ); ?>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </article>
@@ -346,7 +504,7 @@ function eu_get_reading_time( ?int $post_id = null, int $wpm = 200 ): string {
     $count    = str_word_count( strip_tags( $content ) );
     $minutes  = max( 1, (int) ceil( $count / $wpm ) );
     return sprintf(
-        _n( '%d min read', '%d min read', $minutes, EU_TEXT_DOMAIN ),
+        _n( '%d min read', '%d min read', $minutes, 'elegant-umrah' ),
         $minutes
     );
 }
@@ -407,7 +565,7 @@ function eu_icon( string $name ): string {
  */
 function eu_section_header( string $label, string $title, string $desc = '', bool $dark = false ): void {
     $title_class = $dark ? 'eu-section-title text-white' : 'eu-section-title';
-    $desc_class  = $dark ? 'eu-section-desc' : 'eu-section-desc';
+    $desc_class  = 'eu-section-desc';
     ?>
     <header class="eu-section-header">
         <span class="eu-section-label"><?php echo esc_html( $label ); ?></span>
@@ -429,4 +587,153 @@ function eu_stars( int $rating = 5 ): string {
         $stars .= $i < $rating ? '★' : '☆';
     }
     return '<span class="eu-stars" aria-label="' . $rating . ' out of 5 stars">' . $stars . '</span>';
+}
+
+/**
+ * Get dynamic Header brand HTML (Logo, Site Title, Tagline)
+ */
+function eu_get_header_brand_html(): string {
+    $title = get_bloginfo( 'name' );
+    if ( ! $title || 'Local Development' === $title ) {
+        $title = 'Elegant Umrah';
+    }
+    $tagline = get_bloginfo( 'description' );
+    if ( ! $tagline || 'Just another WordPress site' === $tagline ) {
+        $tagline = 'Travel & Pilgrimage';
+    }
+
+    $logo_url = esc_url( (string) get_theme_mod( 'eu_custom_logo_url', '' ) );
+    if ( ! $logo_url && has_custom_logo() ) {
+        $logo_data = wp_get_attachment_image_src( (int) get_theme_mod( 'custom_logo' ), 'full' );
+        if ( ! empty( $logo_data[0] ) ) {
+            $logo_url = esc_url( $logo_data[0] );
+        }
+    }
+
+    $icon_emoji = (string) get_theme_mod( 'eu_logo_icon_text', '🕌' );
+    if ( ! $icon_emoji ) {
+        $icon_emoji = '🕌';
+    }
+
+    $show_text = (bool) get_theme_mod( 'eu_show_title_with_logo', true );
+    $home_url  = esc_url( home_url( '/' ) );
+
+    $html = '<a href="' . $home_url . '" class="eu-logo" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none">';
+
+    if ( $logo_url ) {
+        $html .= '<div class="eu-logo-img-wrap" style="display:flex;align-items:center;flex-shrink:0">';
+        $html .= '<img src="' . $logo_url . '" alt="' . esc_attr( $title ) . '" class="eu-custom-logo" style="max-height:48px;width:auto;object-fit:contain" />';
+        $html .= '</div>';
+    } else {
+        $html .= '<div class="eu-logo-icon" style="width:42px;height:42px;background:linear-gradient(135deg,#D4AF37,#B8960C);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">';
+        $html .= '<span style="line-height:1">' . esc_html( $icon_emoji ) . '</span>';
+        $html .= '</div>';
+    }
+
+    if ( $show_text || ! $logo_url ) {
+        $html .= '<div class="eu-logo-text" style="display:flex;flex-direction:column">';
+        $html .= '<span style="font-size:1.1rem;font-weight:700;color:#FFFFFF;line-height:1.1">' . esc_html( $title ) . '</span>';
+        if ( $tagline ) {
+            $html .= '<span class="secondary-text" style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#D4AF37">' . esc_html( $tagline ) . '</span>';
+        }
+        $html .= '</div>';
+    }
+
+    $html .= '</a>';
+    return $html;
+}
+
+/**
+ * Get dynamic Footer brand HTML (Logo, Site Title, Tagline)
+ */
+function eu_get_footer_brand_html(): string {
+    $title = get_bloginfo( 'name' );
+    if ( ! $title || 'Local Development' === $title ) {
+        $title = 'Elegant Umrah';
+    }
+    $tagline = get_bloginfo( 'description' );
+    if ( ! $tagline || 'Just another WordPress site' === $tagline ) {
+        $tagline = 'Premium Umrah & Hajj Travel';
+    }
+
+    $logo_url = esc_url( (string) get_theme_mod( 'eu_custom_logo_url', '' ) );
+    if ( ! $logo_url && has_custom_logo() ) {
+        $logo_data = wp_get_attachment_image_src( (int) get_theme_mod( 'custom_logo' ), 'full' );
+        if ( ! empty( $logo_data[0] ) ) {
+            $logo_url = esc_url( $logo_data[0] );
+        }
+    }
+
+    $icon_emoji = (string) get_theme_mod( 'eu_logo_icon_text', '🕌' );
+    if ( ! $icon_emoji ) {
+        $icon_emoji = '🕌';
+    }
+
+    $html = '<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">';
+    if ( $logo_url ) {
+        $html .= '<img src="' . $logo_url . '" alt="' . esc_attr( $title ) . '" class="eu-footer-custom-logo" style="max-height:44px;width:auto;object-fit:contain" />';
+    } else {
+        $html .= '<p style="font-size:1.5rem;margin:0">' . esc_html( $icon_emoji ) . '</p>';
+    }
+    $html .= '<span style="font-size:1.3rem;font-weight:700;color:#FFFFFF">' . esc_html( $title ) . '</span>';
+    $html .= '</div>';
+
+    if ( $tagline ) {
+        $html .= '<p style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:#D4AF37;margin-bottom:1.25rem">' . esc_html( $tagline ) . '</p>';
+    }
+
+    return $html;
+}
+
+/**
+ * Get Hero configuration (images, overlay opacity, slide interval)
+ */
+function eu_get_hero_config(): array {
+    $images = [];
+
+    // 1. Bulk image URLs from textarea
+    $bulk = (string) get_theme_mod( 'eu_hero_image_urls', '' );
+    if ( $bulk ) {
+        $lines = preg_split( '/\r\n|\r|\n/', $bulk );
+        foreach ( $lines as $line ) {
+            $clean_url = esc_url_raw( trim( $line ) );
+            if ( $clean_url && filter_var( $clean_url, FILTER_VALIDATE_URL ) ) {
+                $images[] = $clean_url;
+            }
+        }
+    }
+
+    // 2. Individual slots (1 to 5)
+    for ( $i = 1; $i <= 5; $i++ ) {
+        $img = esc_url_raw( (string) get_theme_mod( "eu_hero_image_{$i}", '' ) );
+        if ( ! $img ) {
+            $img = esc_url_raw( (string) get_theme_mod( "eu_hero_image_url_{$i}", '' ) );
+        }
+        if ( $img && filter_var( $img, FILTER_VALIDATE_URL ) ) {
+            $images[] = $img;
+        }
+    }
+
+    $images = array_values( array_unique( $images ) );
+
+    $overlay_opacity = (float) get_theme_mod( 'eu_hero_overlay_opacity', '0.70' );
+    $overlay_opacity = min( 0.95, max( 0.20, $overlay_opacity ) );
+
+    $interval = (int) get_theme_mod( 'eu_hero_slide_interval', 5 );
+    $interval = min( 15, max( 3, $interval ) );
+
+    return [
+        'images'          => $images,
+        'overlay_opacity' => $overlay_opacity,
+        'interval'        => $interval,
+    ];
+}
+
+/**
+ * Render Breadcrumbs (Supports Yoast SEO Breadcrumbs with native fallback)
+ */
+function eu_render_breadcrumbs(): void {
+    if ( function_exists( 'yoast_breadcrumb' ) ) {
+        yoast_breadcrumb( '<nav class="eu-breadcrumbs" aria-label="' . esc_attr__( 'Breadcrumbs', 'elegant-umrah' ) . '">', '</nav>' );
+    }
 }

@@ -15,58 +15,89 @@ This document outlines the architecture, coding standards, and directory structu
 
 ```text
 elegant-umrah/
-├── theme.json               # GLOBAL CONFIG: Colors (#0B0B0B, #D4AF37), layout sizes, font families
-├── style.css                # Standard WordPress stylesheet (contains some global utility overrides)
+├── archive-umrah_package.php
 ├── functions.php            # Entry point for loading all inc/ PHP files and theme setup
+├── home.php                 # Articles archive (PHP override of home.html; runs PHP logic)
 ├── index.php                # Fallback for older WP versions (empty, as it's an FSE theme)
+├── PROJECT_STRUCTURE.md     # This file
+├── single.php               # Single post (PHP override of single.html; runs PHP logic)
+├── single-umrah_package.php
+├── style.css                # Standard WordPress stylesheet (contains some global utility overrides)
+├── theme.json               # GLOBAL CONFIG: Colors, layout sizes, font families
 │
-├── assets/                  # CSS/JS assets (Vanilla CSS/JS, no Tailwind/React compilation needed)
+├── assets/                  # CSS/JS assets
 │   ├── css/
 │   │   ├── admin.css        # Styles for the custom meta fields in WP Admin
 │   │   └── editor.css       # Custom styles loaded in the Gutenberg editor
 │   └── js/
-│       ├── admin.js         # Handles meta field interactions (image uploads, color pickers)
-│       ├── main.js          # Frontend interactions (Sticky header, mobile menu)
-│       └── packages-filter.js # AJAX filtering logic for the Packages page
+│       ├── admin.js         # Handles meta field interactions
+│       ├── main.js          # Frontend interactions
+│       └── packages-filter.js # AJAX filtering logic
 │
 ├── blocks/                  # CUSTOM GUTENBERG BLOCKS (Dynamic blocks)
-│   ├── hero/                # Custom Hero block
-│   ├── package-card/        # Custom Package Card block (Renders Umrah Packages data)
-│   └── testimonial/         # Custom Testimonial block
-│   # Note: Each block contains `block.json`, `render.php` (server-side rendering), and `index.asset.php` to manage WP dependencies.
+│   ├── hero/
+│   │   ├── block.json
+│   │   ├── index.asset.php
+│   │   ├── index.js
+│   │   ├── render.php
+│   │   └── style.css
+│   ├── package-card/
+│   │   ├── block.json
+│   │   ├── index.asset.php
+│   │   ├── index.js
+│   │   ├── render.php
+│   │   └── style.css
+│   └── testimonial/
+│       ├── block.json
+│       ├── index.asset.php
+│       ├── index.js
+│       ├── render.php
+│       └── style.css
 │
 ├── inc/                     # CORE PHP LOGIC
-│   ├── setup.php            # Theme setup (theme supports, text domain)
+│   ├── admin-columns.php    # Custom admin column definitions
+│   ├── articles.php         # Articles: AJAX filter, category badge, related posts
+│   ├── customizer.php       # Theme customizer options
 │   ├── enqueue.php          # Asset enqueuing for frontend, admin, and editor
+│   ├── helpers.php          # Helper functions and AJAX endpoints
+│   ├── i18n.php             # Internationalization setup
 │   ├── post-types.php       # CPT registrations (e.g., umrah_package)
+│   ├── setup.php            # Theme setup (theme supports, text domain)
 │   ├── taxonomies.php       # Taxonomy registrations
-│   ├── helpers.php          # Helper functions and AJAX endpoints (e.g., package filtering)
-│   │
-│   └── fields/              # CUSTOM META FIELDS ENGINE (Native replacement for ACF)
-│       ├── field-core.php   # Meta boxes registration logic
-│       ├── field-groups.php # DEFINES WHICH FIELDS APPEAR WHERE (Edit this to add new fields!)
-│       ├── field-render.php # HTML rendering for admin form fields
-│       ├── field-save.php   # Logic for saving $_POST data securely
-│       └── field-types.php  # Schema definitions (text, select, image, checkboxes)
+│   └── fields/              # CUSTOM META FIELDS ENGINE
+│       ├── field-core.php
+│       ├── field-groups.php # DEFINES WHICH FIELDS APPEAR WHERE
+│       ├── field-helpers.php
+│       ├── field-render.php
+│       ├── field-save.php
+│       └── field-types.php
+│
+├── languages/
+│   └── README.txt
 │
 ├── parts/                   # FSE TEMPLATE PARTS (HTML)
-│   ├── header.html          # Global header part
-│   ├── footer.html          # Global footer part (Built using native wp:columns)
-│   └── sidebar.html         # Sidebar component
+│   ├── footer.html
+│   ├── header.html
+│   └── sidebar.html
 │
-├── patterns/                # NATIVE WORDPRESS BLOCK PATTERNS (PHP files with header comments)
+├── patterns/                # NATIVE WORDPRESS BLOCK PATTERNS
+│   ├── articles-grid.php    # Reusable 3-up article grid with section header
+│   ├── cta-section.php
 │   ├── hero.php
-│   ├── testimonials.php
 │   ├── package-card.php
 │   ├── packages-grid.php
-│   └── cta-section.php
+│   └── testimonials.php
 │
 └── templates/               # FSE TEMPLATES (HTML files that dictate page layouts)
-    ├── front-page.html      # Homepage layout
-    ├── index.html           # Main blog/fallback layout
-    ├── archive-umrah_package.html # Packages archive listing
-    ├── single-umrah_package.html  # Single package details page
-    └── 404.html             # Error page
+    ├── 404.html
+    ├── archive-umrah_package.html
+    ├── archive.html
+    ├── front-page.html
+    ├── home.html
+    ├── index.html
+    ├── page.html
+    ├── single-umrah_package.html
+    └── single.html
 ```
 
 ## Key Development Rules

@@ -1,45 +1,44 @@
-<!-- wp:group {"className":"eu-sidebar","tagName":"aside","style":{"spacing":{"padding":{"top":"0","bottom":"0"}}}} -->
+<!-- wp:group {"tagName":"aside","className":"eu-sidebar","layout":{"type":"default"}} -->
 <aside class="wp-block-group eu-sidebar">
 
-    <!-- wp:group {"className":"eu-widget eu-widget-search"} -->
+    <!-- wp:group {"className":"eu-widget eu-widget-search","layout":{"type":"default"}} -->
     <div class="wp-block-group eu-widget eu-widget-search">
         <!-- wp:search {"label":"Search Articles","showLabel":true,"placeholder":"Search...","buttonText":"Go","buttonPosition":"button-inside","buttonUseIcon":true} /-->
     </div>
     <!-- /wp:group -->
 
-    <!-- wp:group {"className":"eu-widget eu-widget-categories"} -->
+    <!-- wp:group {"className":"eu-widget eu-widget-categories","layout":{"type":"default"}} -->
     <div class="wp-block-group eu-widget eu-widget-categories">
-        <!-- wp:heading {"level":4,"className":"eu-widget-title","style":{"typography":{"fontSize":"0.9rem","fontWeight":"700"},"color":{"text":"#0B0B0B"}}} -->
+        <!-- wp:heading {"level":4,"className":"eu-widget-title"} -->
         <h4 class="wp-block-heading eu-widget-title">Categories</h4>
         <!-- /wp:heading -->
         <!-- wp:categories {"displayAsDropdown":false,"showHierarchy":false,"showPostCounts":true} /-->
     </div>
     <!-- /wp:group -->
 
-    <!-- wp:group {"className":"eu-widget eu-widget-recent-posts"} -->
+    <!-- wp:group {"className":"eu-widget eu-widget-recent-posts","layout":{"type":"default"}} -->
     <div class="wp-block-group eu-widget eu-widget-recent-posts">
-        <!-- wp:heading {"level":4,"className":"eu-widget-title","style":{"typography":{"fontSize":"0.9rem","fontWeight":"700"},"color":{"text":"#0B0B0B"}}} -->
+        <!-- wp:heading {"level":4,"className":"eu-widget-title"} -->
         <h4 class="wp-block-heading eu-widget-title">Recent Articles</h4>
         <!-- /wp:heading -->
         <!-- wp:latest-posts {"postsToShow":5,"displayPostDate":true,"displayFeaturedImage":true,"featuredImageAlign":"left","featuredImageSizeSlug":"thumbnail"} /-->
     </div>
     <!-- /wp:group -->
 
-    <!-- CTA Widget -->
-    <!-- wp:group {"className":"eu-widget eu-widget-cta","style":{"color":{"background":"#0B0B0B"},"border":{"radius":"12px"},"spacing":{"padding":{"top":"1.75rem","bottom":"1.75rem","left":"1.5rem","right":"1.5rem"}}}} -->
-    <div class="wp-block-group eu-widget eu-widget-cta" style="background-color:#0B0B0B;border-radius:12px;padding:1.75rem 1.5rem;text-align:center">
-        <!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2rem"}}} -->
-        <p class="has-text-align-center" style="font-size:2rem;margin:0 0 0.75rem">🕋</p>
+    <!-- wp:group {"className":"eu-widget eu-widget-cta","layout":{"type":"default"}} -->
+    <div class="wp-block-group eu-widget eu-widget-cta">
+        <!-- wp:paragraph {"align":"center","className":"eu-widget-cta-icon"} -->
+        <p class="has-text-align-center eu-widget-cta-icon">🕋</p>
         <!-- /wp:paragraph -->
-        <!-- wp:heading {"textAlign":"center","level":4,"style":{"typography":{"fontSize":"1rem","fontWeight":"700"},"color":{"text":"#FFFFFF"}}} -->
-        <h4 class="wp-block-heading has-text-align-center" style="color:#FFFFFF;font-size:1rem;font-weight:700;margin-bottom:0.5rem">Ready for Umrah?</h4>
+        <!-- wp:heading {"textAlign":"center","level":4,"className":"eu-widget-cta-title"} -->
+        <h4 class="wp-block-heading has-text-align-center eu-widget-cta-title">Ready for Umrah?</h4>
         <!-- /wp:heading -->
-        <!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"0.8rem"},"color":{"text":"rgba(255,255,255,0.65)"}}} -->
-        <p class="has-text-align-center" style="font-size:0.8rem;color:rgba(255,255,255,0.65);margin-bottom:1.25rem">Let our team help you plan the perfect pilgrimage.</p>
+        <!-- wp:paragraph {"align":"center","className":"eu-widget-cta-desc"} -->
+        <p class="has-text-align-center eu-widget-cta-desc">Let our team help you plan the perfect pilgrimage.</p>
         <!-- /wp:paragraph -->
         <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
         <div class="wp-block-buttons">
-            <!-- wp:button {"className":"eu-btn-cta","style":{"typography":{"fontSize":"0.8rem","fontWeight":"700"}}} -->
+            <!-- wp:button {"className":"eu-btn-cta"} -->
             <div class="wp-block-button eu-btn-cta"><a class="wp-block-button__link wp-element-button" href="/contact">Book Now</a></div>
             <!-- /wp:button -->
         </div>

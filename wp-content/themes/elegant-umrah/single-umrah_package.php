@@ -8,6 +8,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+// Pre-render block template parts before wp_head() so block styles enqueue properly
+$eu_header_html = do_blocks( '<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->' );
+$eu_footer_html = do_blocks( '<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->' );
+
 // Output the full HTML document structure for an FSE block theme
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -20,46 +24,39 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 <?php wp_body_open(); ?>
 
 <!-- Header template part -->
-<?php block_template_part( 'header' ); ?>
+<?php echo $eu_header_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 <?php
 
 while ( have_posts() ) :
     the_post();
 
-    $post_id      = get_the_ID();
-    $title        = get_the_title();
+    $post_id        = get_the_ID();
+    $title          = get_the_title();
     $currency       = get_post_meta( $post_id, 'eu_currency', true )             ?: 'Rp';
     $price          = get_post_meta( $post_id, 'eu_price', true )                ?: '';
     $discount_price = get_post_meta( $post_id, 'eu_discount_price', true )       ?: '';
-    $duration     = get_post_meta( $post_id, 'eu_duration', true )             ?: '';
-    $departure    = get_post_meta( $post_id, 'eu_departure_date', true )       ?: '';
-    $est_month    = get_post_meta( $post_id, 'eu_estimate_month', true )       ?: '';
-    $muthawwif    = get_post_meta( $post_id, 'eu_muthawwif', true )            ?: '';
-    $pkg_type     = get_post_meta( $post_id, 'eu_package_type', true )         ?: '';
-    $airline      = get_post_meta( $post_id, 'eu_airline', true )              ?: '';
-    $hotel_makkah = get_post_meta( $post_id, 'eu_hotel_makkah', true )         ?: '';
-    $hotel_mk_rat = get_post_meta( $post_id, 'eu_hotel_makkah_rating', true )  ?: '';
-    $hotel_madinah= get_post_meta( $post_id, 'eu_hotel_madinah', true )        ?: '';
-    $hotel_md_rat = get_post_meta( $post_id, 'eu_hotel_madinah_rating', true ) ?: '';
-    $inclusions   = get_post_meta( $post_id, 'eu_inclusions', true )           ?: '';
-    $exclusions   = get_post_meta( $post_id, 'eu_exclusions', true )           ?: '';
-    $add_tour     = get_post_meta( $post_id, 'eu_additional_tour', true )      ?: '';
-    $add_country  = get_post_meta( $post_id, 'eu_additional_country', true )   ?: '';
-    $seats        = (int) get_post_meta( $post_id, 'eu_seats_available', true );
-    $is_featured  = (bool) get_post_meta( $post_id, 'eu_is_featured', true );
-    $is_sold_out  = (bool) get_post_meta( $post_id, 'eu_is_sold_out', true );
+    $duration       = get_post_meta( $post_id, 'eu_duration', true )             ?: '';
+    $departure      = get_post_meta( $post_id, 'eu_departure_date', true )       ?: '';
+    $est_month      = get_post_meta( $post_id, 'eu_estimate_month', true )       ?: '';
+    $muthawwif      = get_post_meta( $post_id, 'eu_muthawwif', true )            ?: '';
+    $pkg_type       = get_post_meta( $post_id, 'eu_package_type', true )         ?: '';
+    $airline        = get_post_meta( $post_id, 'eu_airline', true )              ?: '';
+    $hotel_makkah   = get_post_meta( $post_id, 'eu_hotel_makkah', true )         ?: '';
+    $hotel_mk_rat   = get_post_meta( $post_id, 'eu_hotel_makkah_rating', true )  ?: '';
+    $hotel_madinah  = get_post_meta( $post_id, 'eu_hotel_madinah', true )        ?: '';
+    $hotel_md_rat   = get_post_meta( $post_id, 'eu_hotel_madinah_rating', true ) ?: '';
+    $inclusions     = get_post_meta( $post_id, 'eu_inclusions', true )           ?: '';
+    $exclusions     = get_post_meta( $post_id, 'eu_exclusions', true )           ?: '';
+    $add_tour       = get_post_meta( $post_id, 'eu_additional_tour', true )      ?: '';
+    $add_country    = get_post_meta( $post_id, 'eu_additional_country', true )   ?: '';
+    $seats          = (int) get_post_meta( $post_id, 'eu_seats_available', true );
+    $is_featured    = (bool) get_post_meta( $post_id, 'eu_is_featured', true );
+    $is_sold_out    = (bool) get_post_meta( $post_id, 'eu_is_sold_out', true );
+    $schedule       = eu_get_package_schedule( $post_id );
 
-    // Package type label
-    $type_labels = [
-        'umrah'      => 'Umrah',
-        'hajj'       => 'Hajj',
-        'umrah_plus' => 'Umrah Plus',
-        'family'     => 'Family Package',
-        'vip'        => 'VIP Premium',
-        'honeymoon'  => 'Honeymoon Umrah',
-    ];
-    $type_label = $type_labels[ $pkg_type ] ?? ucfirst( str_replace( '_', ' ', $pkg_type ) );
+    // Package type label (dynamic from taxonomy / meta)
+    $type_label = eu_get_package_type_label( $post_id, $pkg_type );
 
     // Stars helper
     $stars = function( int $n ): string {
@@ -69,52 +66,27 @@ while ( have_posts() ) :
     // Departure formatted
     if ( $departure ) {
         $departure_fmt   = date_i18n( 'j F Y', strtotime( $departure ) );
-        $departure_label = 'Departure Date';
+        $departure_label = eu_t( 'Departure Date', [ 'id' => 'Tanggal Keberangkatan' ] );
     } elseif ( $est_month ) {
         $departure_fmt   = date_i18n( 'F Y', strtotime( $est_month . '-01' ) );
-        $departure_label = 'Departure Month';
+        $departure_label = eu_t( 'Departure Month', [ 'id' => 'Estimasi Keberangkatan' ] );
     } else {
         $departure_fmt   = '';
-        $departure_label = 'Departure';
+        $departure_label = eu_t( 'Departure', [ 'id' => 'Keberangkatan' ] );
     }
 
-    // Currency formatting helper
-    // Strips any existing non-numeric chars, applies locale-aware thousands separator
-    $format_price = function( string $raw, string $curr ): string {
-        // Remove everything except digits and dots/commas
-        $numeric = preg_replace( '/[^\d.,]/', '', $raw );
-        // Normalise: treat commas as thousands sep (Indonesian style: 22.500.000 or 22,500,000)
-        // Remove dots then commas used as thousands seps; keep the last dot if it's a decimal
-        $numeric = str_replace( ',', '.', $numeric );
-        // If there are multiple dots, keep only the last as decimal; remove the rest
-        $parts = explode( '.', $numeric );
-        if ( count( $parts ) > 2 ) {
-            // Multiple dots → all are thousands seps, no decimal
-            $numeric = implode( '', $parts );
-        } else {
-            $numeric = $numeric;
-        }
-        $number = (float) $numeric;
-
-        if ( $curr === 'USD' ) {
-            return 'USD ' . number_format( $number, 2, '.', ',' );
-        }
-        // Default: Rp (Indonesian Rupiah — no decimals, dot thousands sep)
-        return 'Rp ' . number_format( $number, 0, ',', '.' );
-    };
-
-    $price_fmt    = $price          ? $format_price( $price, $currency )          : '';
-    $discount_fmt = $discount_price ? $format_price( $discount_price, $currency ) : '';
+    $price_fmt    = $price          ? eu_format_price( (string) $price, (string) $currency )          : '';
+    $discount_fmt = $discount_price ? eu_format_price( (string) $discount_price, (string) $currency ) : '';
 
     // Featured image (poster) — full size, no crop
     $poster_url = get_the_post_thumbnail_url( $post_id, 'full' );
 
-    // Book URL
-    $book_url = add_query_arg( 'package', $post_id, home_url( '/contact/' ) );
+    // Book URL — fallback to WhatsApp if contact page does not exist yet
+    $contact_page = get_page_by_path( 'contact' );
+    $book_url     = $contact_page ? add_query_arg( 'package', $post_id, get_permalink( $contact_page ) ) : eu_get_whatsapp_url( 'Assalamualaikum, saya ingin memesan paket: ' . $title );
 
     // WA link
-    $wa_msg  = rawurlencode( 'Assalamualaikum, saya ingin info paket: ' . $title );
-    $wa_link = 'https://wa.me/621234567890?text=' . $wa_msg;
+    $wa_link = eu_get_whatsapp_url( 'Assalamualaikum, saya ingin info paket: ' . $title );
 ?>
 
 <main class="eu-pkg-single" id="eu-pkg-single">
@@ -123,15 +95,6 @@ while ( have_posts() ) :
          LEFT SIDEBAR — sticky on tablet+
          ============================================================ -->
     <aside class="eu-pkg-sidebar" aria-label="Package sidebar">
-
-        <!-- Logo -->
-        <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="eu-pkg-sidebar-logo">
-            <div class="eu-pkg-sidebar-logo-icon" aria-hidden="true">🕌</div>
-            <div class="eu-pkg-sidebar-logo-text">
-                <span class="eu-pkg-sidebar-logo-primary"><?php bloginfo( 'name' ); ?></span>
-                <span class="eu-pkg-sidebar-logo-secondary"><?php eu_te( 'Travel & Pilgrimage', [ 'id' => 'Perjalanan & Ziarah' ] ); ?></span>
-            </div>
-        </a>
 
         <!-- Promotion Poster -->
         <div class="eu-pkg-sidebar-poster">
@@ -143,7 +106,7 @@ while ( have_posts() ) :
             <?php else : ?>
                 <div class="eu-pkg-sidebar-poster-placeholder" aria-hidden="true">
                     <span>🕋</span>
-                    <p>Umrah &amp; Hajj<br>Premium Package</p>
+                    <p><?php eu_te( 'Umrah & Hajj Premium Package', [ 'id' => 'Paket Premium Umrah & Haji' ] ); ?></p>
                 </div>
             <?php endif; ?>
             <?php if ( $is_sold_out ) : ?>
@@ -157,7 +120,13 @@ while ( have_posts() ) :
         <?php if ( $price_fmt || $discount_fmt ) : ?>
         <div class="eu-pkg-sidebar-price">
             <span class="eu-pkg-sidebar-price-label">
-                <?php echo $discount_fmt ? esc_html__( 'Special Price', 'elegant-umrah' ) : esc_html__( 'Starting from', 'elegant-umrah' ); ?>
+                <?php
+                if ( $discount_fmt ) {
+                    eu_te( 'Special Price', [ 'id' => 'Harga Spesial' ] );
+                } else {
+                    eu_te( 'Starting from', [ 'id' => 'Mulai dari' ] );
+                }
+                ?>
             </span>
             <?php if ( $discount_fmt ) : ?>
                 <span class="eu-pkg-sidebar-price-amount eu-pkg-sidebar-price-amount--discount">
@@ -215,6 +184,8 @@ while ( have_posts() ) :
          RIGHT CONTENT — scrollable
          ============================================================ -->
     <div class="eu-pkg-content" id="eu-pkg-content">
+
+        <?php eu_render_breadcrumbs(); ?>
 
         <!-- Package type pill -->
         <?php if ( $type_label ) : ?>
@@ -360,10 +331,34 @@ while ( have_posts() ) :
         </div>
         <?php endif; ?>
 
+        <!-- Day-by-Day Itinerary Schedule -->
+        <?php if ( ! empty( $schedule ) ) : ?>
+        <hr class="eu-pkg-divider">
+        <div class="eu-pkg-schedule">
+            <h2 class="eu-pkg-section-title">🗓️ <?php eu_te( 'Itinerary Schedule', [ 'id' => 'Jadwal Perjalanan' ] ); ?></h2>
+            <div class="eu-timeline">
+                <?php foreach ( $schedule as $item ) : ?>
+                    <div class="eu-timeline-item">
+                        <div class="eu-timeline-dot" aria-hidden="true"></div>
+                        <?php if ( ! empty( $item['day'] ) ) : ?>
+                            <div class="eu-timeline-day"><?php echo esc_html( $item['day'] ); ?></div>
+                        <?php endif; ?>
+                        <?php if ( ! empty( $item['title'] ) ) : ?>
+                            <h3 class="eu-timeline-title"><?php echo esc_html( $item['title'] ); ?></h3>
+                        <?php endif; ?>
+                        <?php if ( ! empty( $item['description'] ) ) : ?>
+                            <p class="eu-timeline-desc"><?php echo esc_html( $item['description'] ); ?></p>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <!-- Post description / itinerary from editor -->
         <?php
         $content = get_the_content();
-        if ( $content ) : ?>
+        if ( ! empty( trim( wp_strip_all_tags( $content ) ) ) ) : ?>
         <hr class="eu-pkg-divider">
         <div class="eu-pkg-description">
             <?php the_content(); ?>
@@ -377,7 +372,7 @@ while ( have_posts() ) :
 <?php
 endwhile;
 ?>
-<?php block_template_part( 'footer' ); ?>
+<?php echo $eu_footer_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 <?php wp_footer(); ?>
 </body>
 </html>

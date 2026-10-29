@@ -1,0 +1,71 @@
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","className":"eu-main-content","layout":{"type":"constrained"}} -->
+<main class="wp-block-group eu-main-content">
+
+    <!-- wp:html -->
+    <div class="eu-articles-hero alignfull">
+        <div class="eu-articles-hero-inner">
+            <div class="eu-articles-hero-pattern" aria-hidden="true"></div>
+            <div class="eu-articles-hero-content">
+                <span class="eu-section-label" style="color:#D4AF37;font-size:0.75rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase">✦ Knowledge &amp; Inspiration</span>
+                <h1 class="eu-articles-hero-title">News &amp; Articles</h1>
+                <p class="eu-articles-hero-desc">Deepen your understanding of Hajj and Umrah. Tips, guides, and spiritual insights curated for the modern Muslim traveller.</p>
+            </div>
+        </div>
+    </div>
+    <!-- /wp:html -->
+
+    <!-- wp:group {"className":"eu-section eu-articles-section","style":{"spacing":{"padding":{"top":"clamp(2.5rem,6vw,4rem)","bottom":"clamp(3rem,7vw,5rem)","left":"1.5rem","right":"1.5rem"}},"color":{"background":"#F8F8F8"}},"layout":{"type":"constrained","contentSize":"1200px"}} -->
+    <div class="wp-block-group eu-section eu-articles-section" style="background-color:#F8F8F8;padding:clamp(2.5rem,6vw,4rem) 1.5rem clamp(3rem,7vw,5rem)">
+
+        <!-- wp:query {"queryId":2,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"layout":{"type":"constrained","contentSize":"1200px"}} -->
+        <div class="wp-block-query">
+
+            <!-- wp:post-template {"className":"eu-article-grid","layout":{"type":"grid","columnCount":3}} -->
+                <!-- wp:group {"className":"eu-article-card","layout":{"type":"flex","flexWrap":"nowrap","orientation":"vertical"}} -->
+                <div class="wp-block-group eu-article-card">
+                    <!-- wp:post-featured-image {"isLink":true,"height":"210px","className":"eu-article-thumb"} /-->
+                    <!-- wp:group {"className":"eu-article-body","layout":{"type":"flex","flexWrap":"nowrap","orientation":"vertical"}} -->
+                    <div class="wp-block-group eu-article-body">
+                        <!-- wp:post-terms {"term":"islamic_category","className":"eu-article-cat"} /-->
+                        <!-- wp:post-title {"isLink":true,"className":"eu-article-title"} /-->
+                        <!-- wp:post-excerpt {"moreText":"","excerptLength":18,"className":"eu-article-excerpt"} /-->
+                        <!-- wp:group {"className":"eu-article-meta","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"left"}} -->
+                        <div class="wp-block-group eu-article-meta">
+                            <!-- wp:post-date {"format":"d M Y","className":"eu-article-date"} /-->
+                        </div>
+                        <!-- /wp:group -->
+                        <!-- wp:read-more {"className":"eu-article-read-link","content":"Read Article →"} /-->
+                    </div>
+                    <!-- /wp:group -->
+                </div>
+                <!-- /wp:group -->
+            <!-- /wp:post-template -->
+
+            <!-- wp:query-no-results -->
+            <!-- wp:html -->
+            <div class="eu-no-results" style="text-align:center;padding:4rem 0">
+                <p style="font-size:2.5rem;margin-bottom:1rem">🔍</p>
+                <h3 style="color:#0B0B0B;font-size:1.4rem;font-weight:700;margin-bottom:0.5rem">No articles found.</h3>
+                <p style="color:#666">Check back soon for spiritual insights and travel tips.</p>
+            </div>
+            <!-- /wp:html -->
+            <!-- /wp:query-no-results -->
+
+            <!-- wp:query-pagination {"paginationArrow":"arrow","className":"eu-pagination","layout":{"type":"flex","justifyContent":"center","flexWrap":"wrap"}} -->
+                <!-- wp:query-pagination-previous /-->
+                <!-- wp:query-pagination-numbers /-->
+                <!-- wp:query-pagination-next /-->
+            <!-- /wp:query-pagination -->
+
+        </div>
+        <!-- /wp:query -->
+
+    </div>
+    <!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

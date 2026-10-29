@@ -1,0 +1,76 @@
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","className":"eu-main-content","layout":{"type":"constrained"}} -->
+<main class="wp-block-group eu-main-content">
+
+    <!-- wp:group {"align":"full","className":"eu-post-image-hero"} -->
+    <div class="wp-block-group alignfull eu-post-image-hero" style="background-color:#0B0B0B;min-height:380px">
+        <!-- wp:post-featured-image {"align":"full"} /-->
+    </div>
+    <!-- /wp:group -->
+
+    <!-- wp:group {"className":"eu-single-post","layout":{"contentSize":"760px","type":"constrained"}} -->
+    <div class="wp-block-group eu-single-post" style="padding:3rem 1.5rem 2rem">
+
+        <!-- wp:group {"className":"eu-post-header"} -->
+        <div class="wp-block-group eu-post-header" style="margin-bottom:2.5rem;text-align:center">
+            <!-- wp:post-terms {"term":"islamic_category","className":"eu-article-cat"} /-->
+            <!-- wp:post-title {"className":"eu-post-title","textAlign":"center"} /-->
+            <!-- wp:group {"className":"eu-post-meta-bar","layout":{"type":"flex","justifyContent":"center","flexWrap":"wrap"}} -->
+            <div class="wp-block-group eu-post-meta-bar">
+                <!-- wp:post-author {"showBio":false,"avatarSize":32,"byline":"By","isLink":true} /-->
+                <!-- wp:post-date {"format":"d F Y"} /-->
+            </div>
+            <!-- /wp:group -->
+            <!-- wp:separator {"className":"eu-separator"} -->
+            <hr class="wp-block-separator eu-separator"/>
+            <!-- /wp:separator -->
+        </div>
+        <!-- /wp:group -->
+
+        <!-- wp:post-content {"className":"eu-post-content","layout":{"type":"constrained","contentSize":"760px"}} /-->
+
+        <!-- wp:group {"className":"eu-post-footer"} -->
+        <div class="wp-block-group eu-post-footer" style="margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(0,0,0,0.08)">
+            <!-- wp:post-terms {"term":"post_tag","prefix":"Tags: ","separator":", "} /-->
+        </div>
+        <!-- /wp:group -->
+
+        <!-- wp:comments {"className":"eu-comments-area"} -->
+        <div class="wp-block-comments eu-comments-area" style="margin-top:3rem">
+            <!-- wp:comments-title /-->
+            <!-- wp:comment-template -->
+                <!-- wp:columns -->
+                <div class="wp-block-columns">
+                    <!-- wp:column {"width":"40px"} -->
+                    <div class="wp-block-column" style="flex-basis:40px">
+                        <!-- wp:avatar {"size":40} /-->
+                    </div>
+                    <!-- /wp:column -->
+                    <!-- wp:column -->
+                    <div class="wp-block-column">
+                        <!-- wp:comment-author-name /-->
+                        <!-- wp:comment-date /-->
+                        <!-- wp:comment-content /-->
+                        <!-- wp:comment-reply-link /-->
+                    </div>
+                    <!-- /wp:column -->
+                </div>
+                <!-- /wp:columns -->
+            <!-- /wp:comment-template -->
+            <!-- wp:comments-pagination -->
+                <!-- wp:comments-pagination-previous /-->
+                <!-- wp:comments-pagination-numbers /-->
+                <!-- wp:comments-pagination-next /-->
+            <!-- /wp:comments-pagination -->
+            <!-- wp:post-comments-form /-->
+        </div>
+        <!-- /wp:comments -->
+
+    </div>
+    <!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

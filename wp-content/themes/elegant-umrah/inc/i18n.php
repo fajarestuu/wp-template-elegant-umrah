@@ -79,61 +79,43 @@ function eu_detect_locale(): string {
 }
 
 /**
- * Perform a server-side geo-IP lookup using the free ip-api.com service.
- * Cached for 24 h in a transient to avoid hammering the API.
+ * Detect visitor locale from edge/server headers or Accept-Language header
+ * without making blocking external HTTP calls.
  *
  * @return string|null  Two-letter locale code, or null on failure.
  */
 function eu_geoip_detect_locale(): ?string {
-    // Map of country codes → locale codes
     $country_locale_map = [
-        'ID' => 'id',   // Indonesia
-        // Extend as needed: 'MY' => 'ms', 'AR' => 'ar', etc.
+        'ID' => 'id', // Indonesia
     ];
 
-    $ip = eu_get_client_ip();
-    if ( ! $ip ) return null;
-
-    // Cache per IP for 24 hours — avoids repeated external HTTP calls
-    $transient_key = 'eu_geoip_' . md5( $ip );
-    $cached = get_transient( $transient_key );
-    if ( false !== $cached ) {
-        return $cached ?: null;
+    // 1. Check reverse-proxy / CDN country header (e.g. Cloudflare)
+    if ( ! empty( $_SERVER['HTTP_CF_IPCOUNTRY'] ) ) {
+        $country = strtoupper( sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_IPCOUNTRY'] ) ) );
+        if ( isset( $country_locale_map[ $country ] ) ) {
+            return $country_locale_map[ $country ];
+        }
     }
 
-    // Fetch from ip-api.com (free, no API key, server-side only)
-    $response = wp_remote_get(
-        'http://ip-api.com/json/' . rawurlencode( $ip ) . '?fields=countryCode',
-        [ 'timeout' => 2, 'blocking' => true ]
-    );
-
-    if ( is_wp_error( $response ) ) {
-        set_transient( $transient_key, '', HOUR_IN_SECONDS );
-        return null;
+    // 2. Fallback to browser Accept-Language header
+    if ( ! empty( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) {
+        $accept = strtolower( sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) ) );
+        if ( strpos( $accept, 'id' ) === 0 || strpos( $accept, ',id' ) !== false ) {
+            return 'id';
+        }
     }
 
-    $body    = json_decode( wp_remote_retrieve_body( $response ), true );
-    $country = $body['countryCode'] ?? '';
-    $locale  = $country_locale_map[ strtoupper( $country ) ] ?? 'en';
-
-    set_transient( $transient_key, $locale, DAY_IN_SECONDS );
-    return $locale;
+    return null;
 }
 
 /**
- * Get the real client IP, accounting for reverse proxies.
+ * Initialize locale detection early on 'init' so setcookie() runs before HTTP headers are sent.
  */
-function eu_get_client_ip(): string {
-    foreach ( [ 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' ] as $key ) {
-        if ( ! empty( $_SERVER[ $key ] ) ) {
-            $ip = trim( explode( ',', $_SERVER[ $key ] )[0] );
-            if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ) {
-                return $ip;
-            }
-        }
+add_action( 'init', function (): void {
+    if ( ! is_admin() ) {
+        eu_locale();
     }
-    return '';
-}
+}, 5 );
 
 /**
  * Set the eu_lang cookie for 30 days (session-length for language preference).

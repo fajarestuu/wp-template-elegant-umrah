@@ -14,35 +14,35 @@ function eu_register_post_types() {
 
     // ─── Umrah Package ────────────────────────────────────────────────────────
     register_post_type( 'umrah_package', [
-        'label'               => __( 'Umrah Package', EU_TEXT_DOMAIN ),
+        'label'               => __( 'Umrah Package', 'elegant-umrah' ),
         'labels'              => [
-            'name'                  => __( 'Umrah Packages', EU_TEXT_DOMAIN ),
-            'singular_name'         => __( 'Umrah Package', EU_TEXT_DOMAIN ),
-            'menu_name'             => __( 'Umrah Packages', EU_TEXT_DOMAIN ),
-            'name_admin_bar'        => __( 'Umrah Package', EU_TEXT_DOMAIN ),
-            'add_new'               => __( 'Add Package', EU_TEXT_DOMAIN ),
-            'add_new_item'          => __( 'Add New Package', EU_TEXT_DOMAIN ),
-            'edit_item'             => __( 'Edit Package', EU_TEXT_DOMAIN ),
-            'new_item'              => __( 'New Package', EU_TEXT_DOMAIN ),
-            'view_item'             => __( 'View Package', EU_TEXT_DOMAIN ),
-            'view_items'            => __( 'View Packages', EU_TEXT_DOMAIN ),
-            'search_items'          => __( 'Search Packages', EU_TEXT_DOMAIN ),
-            'not_found'             => __( 'No packages found', EU_TEXT_DOMAIN ),
-            'not_found_in_trash'    => __( 'No packages in trash', EU_TEXT_DOMAIN ),
-            'all_items'             => __( 'All Packages', EU_TEXT_DOMAIN ),
-            'archives'              => __( 'Package Archives', EU_TEXT_DOMAIN ),
-            'attributes'            => __( 'Package Attributes', EU_TEXT_DOMAIN ),
-            'insert_into_item'      => __( 'Insert into package', EU_TEXT_DOMAIN ),
-            'uploaded_to_this_item' => __( 'Uploaded to this package', EU_TEXT_DOMAIN ),
-            'featured_image'        => __( 'Package Cover Image', EU_TEXT_DOMAIN ),
-            'set_featured_image'    => __( 'Set cover image', EU_TEXT_DOMAIN ),
-            'remove_featured_image' => __( 'Remove cover image', EU_TEXT_DOMAIN ),
-            'use_featured_image'    => __( 'Use as cover image', EU_TEXT_DOMAIN ),
-            'filter_items_list'     => __( 'Filter packages list', EU_TEXT_DOMAIN ),
-            'items_list_navigation' => __( 'Packages list navigation', EU_TEXT_DOMAIN ),
-            'items_list'            => __( 'Packages list', EU_TEXT_DOMAIN ),
+            'name'                  => __( 'Umrah Packages', 'elegant-umrah' ),
+            'singular_name'         => __( 'Umrah Package', 'elegant-umrah' ),
+            'menu_name'             => __( 'Umrah Packages', 'elegant-umrah' ),
+            'name_admin_bar'        => __( 'Umrah Package', 'elegant-umrah' ),
+            'add_new'               => __( 'Add Package', 'elegant-umrah' ),
+            'add_new_item'          => __( 'Add New Package', 'elegant-umrah' ),
+            'edit_item'             => __( 'Edit Package', 'elegant-umrah' ),
+            'new_item'              => __( 'New Package', 'elegant-umrah' ),
+            'view_item'             => __( 'View Package', 'elegant-umrah' ),
+            'view_items'            => __( 'View Packages', 'elegant-umrah' ),
+            'search_items'          => __( 'Search Packages', 'elegant-umrah' ),
+            'not_found'             => __( 'No packages found', 'elegant-umrah' ),
+            'not_found_in_trash'    => __( 'No packages in trash', 'elegant-umrah' ),
+            'all_items'             => __( 'All Packages', 'elegant-umrah' ),
+            'archives'              => __( 'Package Archives', 'elegant-umrah' ),
+            'attributes'            => __( 'Package Attributes', 'elegant-umrah' ),
+            'insert_into_item'      => __( 'Insert into package', 'elegant-umrah' ),
+            'uploaded_to_this_item' => __( 'Uploaded to this package', 'elegant-umrah' ),
+            'featured_image'        => __( 'Package Cover Image', 'elegant-umrah' ),
+            'set_featured_image'    => __( 'Set cover image', 'elegant-umrah' ),
+            'remove_featured_image' => __( 'Remove cover image', 'elegant-umrah' ),
+            'use_featured_image'    => __( 'Use as cover image', 'elegant-umrah' ),
+            'filter_items_list'     => __( 'Filter packages list', 'elegant-umrah' ),
+            'items_list_navigation' => __( 'Packages list navigation', 'elegant-umrah' ),
+            'items_list'            => __( 'Packages list', 'elegant-umrah' ),
         ],
-        'description'         => __( 'Umrah & Hajj travel packages', EU_TEXT_DOMAIN ),
+        'description'         => __( 'Umrah & Hajj travel packages', 'elegant-umrah' ),
         'public'              => true,
         'publicly_queryable'  => true,
         'show_ui'             => true,
@@ -69,7 +69,7 @@ function eu_register_post_types() {
         ],
         'show_in_rest'        => true,
         'rest_base'           => 'packages',
-        'taxonomies'          => [ 'package_type', 'destination' ],
+        'taxonomies'          => [ 'destination' ],
         'template'            => [
             [ 'core/paragraph', [ 'placeholder' => 'Write package description here...' ] ],
         ],
@@ -86,9 +86,29 @@ add_action( 'init', 'eu_register_post_types' );
  */
 function eu_register_package_meta_fields() {
     $fields = [
+        'eu_is_sold_out' => [
+            'type'         => 'boolean',
+            'description'  => 'Whether this package is sold out',
+            'single'       => true,
+            'show_in_rest' => true,
+            'default'      => false,
+        ],
+        'eu_currency' => [
+            'type'         => 'string',
+            'description'  => 'Package currency (Rp or USD)',
+            'single'       => true,
+            'show_in_rest' => true,
+            'default'      => 'Rp',
+        ],
         'eu_price' => [
             'type'         => 'string',
             'description'  => 'Package price',
+            'single'       => true,
+            'show_in_rest' => true,
+        ],
+        'eu_discount_price' => [
+            'type'         => 'string',
+            'description'  => 'Promotional discount price',
             'single'       => true,
             'show_in_rest' => true,
         ],
@@ -116,9 +136,33 @@ function eu_register_package_meta_fields() {
             'single'       => true,
             'show_in_rest' => true,
         ],
-        'eu_hotel_info' => [
+        'eu_package_type' => [
             'type'         => 'string',
-            'description'  => 'Hotel information',
+            'description'  => 'Package type (umrah/hajj/umrah_plus/family/vip/honeymoon)',
+            'single'       => true,
+            'show_in_rest' => true,
+        ],
+        'eu_hotel_makkah' => [
+            'type'         => 'string',
+            'description'  => 'Hotel name in Makkah',
+            'single'       => true,
+            'show_in_rest' => true,
+        ],
+        'eu_hotel_makkah_rating' => [
+            'type'         => 'string',
+            'description'  => 'Hotel rating in Makkah (3-5)',
+            'single'       => true,
+            'show_in_rest' => true,
+        ],
+        'eu_hotel_madinah' => [
+            'type'         => 'string',
+            'description'  => 'Hotel name in Madinah',
+            'single'       => true,
+            'show_in_rest' => true,
+        ],
+        'eu_hotel_madinah_rating' => [
+            'type'         => 'string',
+            'description'  => 'Hotel rating in Madinah (3-5)',
             'single'       => true,
             'show_in_rest' => true,
         ],
@@ -142,15 +186,27 @@ function eu_register_package_meta_fields() {
             'show_in_rest' => true,
             'default'      => false,
         ],
-        'eu_package_type' => [
-            'type'         => 'string',
-            'description'  => 'Package type (umrah/hajj/combo)',
-            'single'       => true,
-            'show_in_rest' => true,
-        ],
         'eu_inclusions' => [
             'type'         => 'string',
             'description'  => 'What is included (newline-separated)',
+            'single'       => true,
+            'show_in_rest' => true,
+        ],
+        'eu_exclusions' => [
+            'type'         => 'string',
+            'description'  => 'What is excluded (newline-separated)',
+            'single'       => true,
+            'show_in_rest' => true,
+        ],
+        'eu_additional_tour' => [
+            'type'         => 'string',
+            'description'  => 'Additional tour included',
+            'single'       => true,
+            'show_in_rest' => true,
+        ],
+        'eu_additional_country' => [
+            'type'         => 'string',
+            'description'  => 'Additional country visited',
             'single'       => true,
             'show_in_rest' => true,
         ],
@@ -230,16 +286,7 @@ function eu_register_page_meta_fields() {
 add_action( 'init', 'eu_register_page_meta_fields' );
 
 /**
- * Flush rewrite rules on activation
- */
-function eu_flush_rewrite_rules() {
-    eu_register_post_types();
-    flush_rewrite_rules();
-}
-register_activation_hook( EU_DIR . '/functions.php', 'eu_flush_rewrite_rules' );
-
-/**
- * Add rewrite flush reminder
+ * Flush rewrite rules on theme switch
  */
 add_action( 'after_switch_theme', function() {
     eu_register_post_types();

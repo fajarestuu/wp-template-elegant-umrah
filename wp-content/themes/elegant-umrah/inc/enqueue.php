@@ -45,6 +45,19 @@ function eu_enqueue_assets() {
         'isRtl'     => is_rtl() ? 'true' : 'false',
     ] );
 
+    // Localize article filter data (available on blog/archive pages)
+    if ( is_home() || is_archive() || is_singular( 'post' ) ) {
+        wp_localize_script( 'elegant-umrah-main', 'euArticles', [
+            'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( 'eu_nonce' ),
+            'action'  => 'eu_filter_articles',
+            'i18n'    => [
+                'loading'  => __( 'Loading articles…', 'elegant-umrah' ),
+                'error'    => __( 'Something went wrong. Please try again.', 'elegant-umrah' ),
+            ],
+        ] );
+    }
+
     // Comment reply script
     if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
         wp_enqueue_script( 'comment-reply' );
@@ -62,6 +75,7 @@ function eu_enqueue_assets() {
     }
 }
 add_action( 'wp_enqueue_scripts', 'eu_enqueue_assets' );
+
 
 /**
  * Preconnect to Google Fonts
