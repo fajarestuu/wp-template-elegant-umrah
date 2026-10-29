@@ -229,27 +229,34 @@ add_filter( 'render_block', function( string $block_content, array $block ): str
 }, 10, 2 );
 
 // =========================================
-// DYNAMIC SITE IDENTITY IN HEADER & FOOTER
-// Injects dynamic logo, title, and tagline from WordPress settings
+// DYNAMIC SITE IDENTITY & BLOCK ENHANCEMENTS
 // =========================================
 add_filter( 'render_block', function( string $block_content, array $block ): string {
-    // 1. Header Brand (.eu-logo)
-    if ( strpos( $block_content, 'eu-logo' ) !== false && function_exists( 'eu_get_header_brand_html' ) ) {
-        $block_content = preg_replace(
-            '#<a\s+[^>]*class=["\'][^"\']*eu-logo[^"\']*["\'][^>]*>.*?<\/a>#si',
-            eu_get_header_brand_html(),
-            $block_content,
-            1
-        );
+    // 1. Header Brand (.eu-logo) on live frontend
+    if ( ! is_admin() && ! empty( $block['attrs']['className'] ) && strpos( $block['attrs']['className'], 'eu-logo' ) !== false && function_exists( 'eu_get_header_brand_html' ) ) {
+        return eu_get_header_brand_html();
     }
 
-    // 2. Footer Brand (.eu-footer-brand)
+    // 2. Mobile Nav Toggle & Drawer on frontend
+    if ( ! is_admin() && ! empty( $block['attrs']['className'] ) && strpos( $block['attrs']['className'], 'eu-nav' ) !== false && function_exists( 'eu_get_mobile_nav_html' ) ) {
+        $block_content .= eu_get_mobile_nav_html();
+    }
+
+    // 3. Hero Slideshow Media Layer on frontend
+    if ( ! is_admin() && ! empty( $block['attrs']['className'] ) && strpos( $block['attrs']['className'], 'eu-hero' ) !== false && function_exists( 'eu_get_hero_media_html' ) ) {
+        $media_html = eu_get_hero_media_html();
+        if ( $media_html ) {
+            $block_content = preg_replace( '#(<div\s+[^>]*class=["\'][^"\']*eu-hero[^"\']*["\'][^>]*>)#i', '$1' . $media_html, $block_content, 1 );
+        }
+    }
+
+    // 4. Footer Brand replacement if still using fallback
     if ( strpos( $block_content, 'eu-footer-brand' ) !== false && function_exists( 'eu_get_footer_brand_html' ) ) {
         $pattern = '#<div\s+style=["\'][^"\']*display:flex[^"\']*margin-bottom:0\.5rem[^"\']*["\']>.*?<\/div>\s*<p\s+style=["\'][^"\']*letter-spacing:0\.1em[^"\']*["\']>.*?<\/p>#si';
         $block_content = preg_replace( $pattern, eu_get_footer_brand_html(), $block_content, 1 );
     }
 
-    // 3. Footer Copyright site title
+    // 5. Footer Copyright site title
     if ( strpos( $block_content, 'eu-footer-bottom' ) !== false ) {
         $site_name = get_bloginfo( 'name' );
         if ( ! $site_name || 'Local Development' === $site_name ) {
@@ -264,6 +271,11 @@ add_filter( 'render_block', function( string $block_content, array $block ): str
 
     return $block_content;
 }, 20, 2 );
+
+// Scroll to top button in footer
+add_action( 'wp_footer', function() {
+    echo '<button id="eu-scroll-top" aria-label="' . esc_attr__( 'Scroll to top', 'elegant-umrah' ) . '" title="' . esc_attr__( 'Scroll to top', 'elegant-umrah' ) . '">↑</button>';
+} );
 
 // =========================================
 // YOAST SEO COMPATIBILITY & ENHANCEMENTS

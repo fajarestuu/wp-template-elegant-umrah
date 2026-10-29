@@ -20,47 +20,113 @@
 	</div>
 	<!-- /wp:group -->
 
-	<!-- wp:html -->
-	<div class="eu-testimonials-wrapper" style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:var(--wp--preset--spacing--30);">
-		<div class="eu-testimonial-card">
-			<div class="eu-testimonial-quote">“</div>
-			<p class="eu-testimonial-text"><?php esc_html_e( 'Alhamdulillah, the most beautiful experience of my life. The team was incredibly professional and caring. I will definitely return for Hajj inshallah!', 'elegant-umrah' ); ?></p>
-			<div class="eu-testimonial-stars">★★★★★</div>
-			<div class="eu-testimonial-author">
-				<div class="eu-testimonial-avatar">AF</div>
-				<div class="eu-testimonial-info">
-					<div class="name">Bapak Ahmad Fauzi</div>
-					<div class="origin">Jakarta · Umrah 2024</div>
+	<!-- wp:columns {"className":"eu-testimonials-grid","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|30","left":"var:preset|spacing|30"}}},"layout":{"type":"constrained","contentSize":"1200px"}} -->
+	<div class="wp-block-columns eu-testimonials-grid">
+		<!-- wp:column -->
+		<div class="wp-block-column">
+			<!-- wp:group {"className":"eu-testimonial-card"} -->
+			<div class="wp-block-group eu-testimonial-card">
+				<!-- wp:paragraph {"className":"eu-testimonial-quote"} -->
+				<p class="eu-testimonial-quote">“</p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"eu-testimonial-text"} -->
+				<p class="eu-testimonial-text"><?php esc_html_e( 'Alhamdulillah, the most beautiful experience of my life. The team was incredibly professional and caring. I will definitely return for Hajj inshallah!', 'elegant-umrah' ); ?></p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"eu-testimonial-stars"} -->
+				<p class="eu-testimonial-stars">★★★★★</p>
+				<!-- /wp:paragraph -->
+				<!-- wp:group {"className":"eu-testimonial-author","layout":{"type":"flex","alignItems":"center","flexWrap":"nowrap"}} -->
+				<div class="wp-block-group eu-testimonial-author">
+					<!-- wp:paragraph {"className":"eu-testimonial-avatar"} -->
+					<p class="eu-testimonial-avatar">AF</p>
+					<!-- /wp:paragraph -->
+					<!-- wp:group {"className":"eu-testimonial-info","layout":{"type":"flex","orientation":"vertical"}} -->
+					<div class="wp-block-group eu-testimonial-info">
+						<!-- wp:paragraph {"className":"name"} -->
+						<p class="name">Bapak Ahmad Fauzi</p>
+						<!-- /wp:paragraph -->
+						<!-- wp:paragraph {"className":"origin"} -->
+						<p class="origin">Jakarta · Umrah 2024</p>
+						<!-- /wp:paragraph -->
+					</div>
+					<!-- /wp:group -->
 				</div>
+				<!-- /wp:group -->
 			</div>
+			<!-- /wp:group -->
 		</div>
+		<!-- /wp:column -->
 
-		<div class="eu-testimonial-card">
-			<div class="eu-testimonial-quote">“</div>
-			<p class="eu-testimonial-text"><?php esc_html_e( 'We went as a family of 7 including elderly parents. The team arranged everything perfectly. Such a heartwarming and flawless journey. Jazakallah khairan!', 'elegant-umrah' ); ?></p>
-			<div class="eu-testimonial-stars">★★★★★</div>
-			<div class="eu-testimonial-author">
-				<div class="eu-testimonial-avatar">SR</div>
-				<div class="eu-testimonial-info">
-					<div class="name">Ibu Siti Rahayu</div>
-					<div class="origin">Surabaya · Hajj 2024</div>
+		<!-- wp:column -->
+		<div class="wp-block-column">
+			<!-- wp:group {"className":"eu-testimonial-card"} -->
+			<div class="wp-block-group eu-testimonial-card">
+				<!-- wp:paragraph {"className":"eu-testimonial-quote"} -->
+				<p class="eu-testimonial-quote">“</p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"eu-testimonial-text"} -->
+				<p class="eu-testimonial-text"><?php esc_html_e( 'We went as a family of 7 including elderly parents. The team arranged everything perfectly. Such a heartwarming and flawless journey. Jazakallah khairan!', 'elegant-umrah' ); ?></p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"eu-testimonial-stars"} -->
+				<p class="eu-testimonial-stars">★★★★★</p>
+				<!-- /wp:paragraph -->
+				<!-- wp:group {"className":"eu-testimonial-author","layout":{"type":"flex","alignItems":"center","flexWrap":"nowrap"}} -->
+				<div class="wp-block-group eu-testimonial-author">
+					<!-- wp:paragraph {"className":"eu-testimonial-avatar"} -->
+					<p class="eu-testimonial-avatar">SR</p>
+					<!-- /wp:paragraph -->
+					<!-- wp:group {"className":"eu-testimonial-info","layout":{"type":"flex","orientation":"vertical"}} -->
+					<div class="wp-block-group eu-testimonial-info">
+						<!-- wp:paragraph {"className":"name"} -->
+						<p class="name">Ibu Siti Rahayu</p>
+						<!-- /wp:paragraph -->
+						<!-- wp:paragraph {"className":"origin"} -->
+						<p class="origin">Surabaya · Hajj 2024</p>
+						<!-- /wp:paragraph -->
+					</div>
+					<!-- /wp:group -->
 				</div>
+				<!-- /wp:group -->
 			</div>
+			<!-- /wp:group -->
 		</div>
+		<!-- /wp:column -->
 
-		<div class="eu-testimonial-card">
-			<div class="eu-testimonial-quote">“</div>
-			<p class="eu-testimonial-text"><?php esc_html_e( 'Third time with Elegant Umrah. The VIP package was absolutely worth every dirham. Private guide, direct flights, and the most spiritual experience I have ever had!', 'elegant-umrah' ); ?></p>
-			<div class="eu-testimonial-stars">★★★★★</div>
-			<div class="eu-testimonial-author">
-				<div class="eu-testimonial-avatar">HW</div>
-				<div class="eu-testimonial-info">
-					<div class="name">Dr. Hendra Wijaya</div>
-					<div class="origin">Bandung · VIP Umrah 2025</div>
+		<!-- wp:column -->
+		<div class="wp-block-column">
+			<!-- wp:group {"className":"eu-testimonial-card"} -->
+			<div class="wp-block-group eu-testimonial-card">
+				<!-- wp:paragraph {"className":"eu-testimonial-quote"} -->
+				<p class="eu-testimonial-quote">“</p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"eu-testimonial-text"} -->
+				<p class="eu-testimonial-text"><?php esc_html_e( 'Third time with Elegant Umrah. The VIP package was absolutely worth every dirham. Private guide, direct flights, and the most spiritual experience I have ever had!', 'elegant-umrah' ); ?></p>
+				<!-- /wp:paragraph -->
+				<!-- wp:paragraph {"className":"eu-testimonial-stars"} -->
+				<p class="eu-testimonial-stars">★★★★★</p>
+				<!-- /wp:paragraph -->
+				<!-- wp:group {"className":"eu-testimonial-author","layout":{"type":"flex","alignItems":"center","flexWrap":"nowrap"}} -->
+				<div class="wp-block-group eu-testimonial-author">
+					<!-- wp:paragraph {"className":"eu-testimonial-avatar"} -->
+					<p class="eu-testimonial-avatar">HW</p>
+					<!-- /wp:paragraph -->
+					<!-- wp:group {"className":"eu-testimonial-info","layout":{"type":"flex","orientation":"vertical"}} -->
+					<div class="wp-block-group eu-testimonial-info">
+						<!-- wp:paragraph {"className":"name"} -->
+						<p class="name">Dr. Hendra Wijaya</p>
+						<!-- /wp:paragraph -->
+						<!-- wp:paragraph {"className":"origin"} -->
+						<p class="origin">Bandung · VIP Umrah 2025</p>
+						<!-- /wp:paragraph -->
+					</div>
+					<!-- /wp:group -->
 				</div>
+				<!-- /wp:group -->
 			</div>
+			<!-- /wp:group -->
 		</div>
+		<!-- /wp:column -->
 	</div>
-	<!-- /wp:html -->
+	<!-- /wp:columns -->
 </div>
 <!-- /wp:group -->

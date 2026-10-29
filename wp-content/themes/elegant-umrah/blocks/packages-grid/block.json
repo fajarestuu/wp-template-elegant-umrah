@@ -1,0 +1,32 @@
+{
+    "apiVersion": 3,
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "elegant-umrah/packages-grid",
+    "version": "1.0.0",
+    "title": "EU Packages Grid",
+    "category": "elegant-umrah",
+    "icon": "grid-view",
+    "description": "Dynamic grid of Umrah & Hajj packages with optional category filter.",
+    "keywords": ["packages", "grid", "umrah", "hajj", "filter"],
+    "textdomain": "elegant-umrah",
+    "attributes": {
+        "postsPerPage": {
+            "type": "integer",
+            "default": 3
+        },
+        "showFilter": {
+            "type": "boolean",
+            "default": false
+        },
+        "columns": {
+            "type": "integer",
+            "default": 3
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true
+    },
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php"
+}

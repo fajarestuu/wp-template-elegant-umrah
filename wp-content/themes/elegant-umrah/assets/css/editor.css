@@ -17,11 +17,37 @@
     font-family: 'Poppins', sans-serif !important;
 }
 
-/* Content width */
-.editor-styles-wrapper .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
-    max-width: 860px;
-    margin-left: auto;
-    margin-right: auto;
+/* Content width: allow full 1200px in header/footer/sections */
+.editor-styles-wrapper .eu-footer-inner > :where(:not(.alignleft):not(.alignright):not(.alignfull)),
+.editor-styles-wrapper .eu-header-inner > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+    max-width: 1200px !important;
+}
+
+/* Remove white background from HTML block preview sandboxes in dark areas */
+.editor-styles-wrapper .eu-footer .block-library-html__edit,
+.editor-styles-wrapper .eu-footer .components-sandbox,
+.editor-styles-wrapper .eu-site-header .block-library-html__edit,
+.editor-styles-wrapper .eu-site-header .components-sandbox,
+.editor-styles-wrapper .eu-hero .block-library-html__edit,
+.editor-styles-wrapper .eu-hero .components-sandbox {
+    background: transparent !important;
+}
+
+.editor-styles-wrapper .eu-footer-heading {
+    color: #FFFFFF !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 1.25rem !important;
+    padding-bottom: 0.75rem !important;
+    display: inline-block !important;
+}
+
+.editor-styles-wrapper .eu-footer-desc {
+    font-size: 0.875rem !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+    line-height: 1.75 !important;
+    margin-bottom: 1.5rem !important;
 }
 
 /* Hero block preview in editor */
@@ -67,10 +93,20 @@
 
 /* Footer dark bg indicator */
 .editor-styles-wrapper .eu-footer {
+    background-color: #080808;
     border-top: 3px solid #D4AF37;
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
-    color: #666;
+    color: #fff;
+}
+
+.editor-styles-wrapper .eu-footer-inner {
+    padding: 4rem 1.5rem 2rem;
+}
+
+.editor-styles-wrapper .eu-footer-grid {
+    margin-bottom: 3rem;
+    gap: 2.5rem;
 }
 
 /* Navigation indicator */
@@ -80,3 +116,129 @@
     border-radius: 6px;
     margin-bottom: 0;
 }
+
+/* Sidebar CTA widget in editor */
+.editor-styles-wrapper .eu-widget-cta {
+    background-color: #0B0B0B;
+    border-radius: 12px;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+}
+
+.editor-styles-wrapper .eu-widget-cta-icon {
+    font-size: 2rem;
+    margin: 0 0 0.75rem;
+}
+
+.editor-styles-wrapper .eu-widget-cta-title {
+    color: #FFFFFF;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.editor-styles-wrapper .eu-widget-cta-desc {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 1.25rem;
+}
+
+/* Ensure navigation is always visible in Site Editor regardless of screen width */
+.editor-styles-wrapper .wp-block-navigation.eu-nav {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+}
+
+.editor-styles-wrapper .wp-block-navigation.eu-nav .wp-block-navigation-item a {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 0.875rem !important;
+    padding: 0.5rem 0.85rem !important;
+    text-decoration: none !important;
+}
+
+.editor-styles-wrapper .wp-block-navigation.eu-nav .eu-nav-cta .wp-block-navigation-item__content {
+    background: linear-gradient(135deg, #D4AF37, #b8960c) !important;
+    color: #0B0B0B !important;
+    font-weight: 700 !important;
+    padding: 0.5rem 1.25rem !important;
+    border-radius: 4px !important;
+}
+
+/* Header brand logo in editor */
+.editor-styles-wrapper .eu-logo .wp-block-site-title a,
+.editor-styles-wrapper .eu-logo .wp-block-site-title {
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+    margin: 0 !important;
+}
+
+.editor-styles-wrapper .eu-logo .wp-block-site-tagline {
+    color: #D4AF37 !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    margin: 0 !important;
+}
+
+/* Footer brand in editor */
+.editor-styles-wrapper .eu-footer-brand-title-wrap .wp-block-site-title a,
+.editor-styles-wrapper .eu-footer-brand-title-wrap .wp-block-site-title {
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+}
+
+.editor-styles-wrapper .eu-footer-brand-tagline {
+    color: #D4AF37 !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    margin-bottom: 1.25rem !important;
+}
+
+/* Footer social links in editor */
+.editor-styles-wrapper .eu-footer-social {
+    display: flex !important;
+    gap: 0.75rem !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.editor-styles-wrapper .eu-footer-social .wp-block-social-link {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 8px !important;
+}
+
+.editor-styles-wrapper .eu-footer-social .wp-block-social-link a {
+    color: #D4AF37 !important;
+    padding: 6px !important;
+}
+
+/* Footer copyright */
+.editor-styles-wrapper .eu-footer-copyright {
+    font-size: 0.8rem !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    margin: 0 !important;
+}
+
+/* Testimonials grid layout in editor */
+.editor-styles-wrapper .eu-testimonials-grid {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+.editor-styles-wrapper .eu-testimonial-card {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(212, 175, 55, 0.15) !important;
+    border-radius: 12px !important;
+    padding: 1.75rem !important;
+    height: 100% !important;
+}
+

@@ -644,6 +644,76 @@ function eu_get_header_brand_html(): string {
 }
 
 /**
+ * Get dynamic Mobile Nav HTML (Toggle button + Drawer)
+ */
+function eu_get_mobile_nav_html(): string {
+    $home_url     = home_url( '/' );
+    $packages_url = home_url( '/packages/' );
+    $articles_url = home_url( '/articles/' );
+    $about_url    = home_url( '/about/' );
+    $contact_url  = home_url( '/contact/' );
+
+    $html  = '<button class="eu-menu-toggle" id="eu-menu-toggle" aria-label="Toggle Navigation Menu" aria-expanded="false" aria-controls="eu-mobile-nav">';
+    $html .= '<span></span><span></span><span></span>';
+    $html .= '</button>';
+
+    $html .= '<nav class="eu-mobile-nav" id="eu-mobile-nav" aria-label="Mobile Navigation" role="navigation">';
+    $html .= '<ul>';
+    $html .= '<li><a href="' . esc_url( $home_url ) . '">Home</a></li>';
+    $html .= '<li class="menu-item-has-children">';
+    $html .= '<a href="' . esc_url( $packages_url ) . '">Packages</a>';
+    $html .= '<ul class="sub-menu">';
+    $html .= '<li><a href="' . esc_url( $packages_url . '?type=umrah' ) . '">Umrah Packages</a></li>';
+    $html .= '<li><a href="' . esc_url( $packages_url . '?type=hajj' ) . '">Hajj Packages</a></li>';
+    $html .= '<li><a href="' . esc_url( $packages_url . '?type=vip' ) . '">VIP Packages</a></li>';
+    $html .= '<li><a href="' . esc_url( $packages_url . '?type=family' ) . '">Family Packages</a></li>';
+    $html .= '</ul>';
+    $html .= '</li>';
+    $html .= '<li><a href="' . esc_url( $articles_url ) . '">Articles</a></li>';
+    $html .= '<li><a href="' . esc_url( $about_url ) . '">About Us</a></li>';
+    $html .= '<li class="eu-nav-cta"><a href="' . esc_url( $contact_url ) . '">Contact Us</a></li>';
+    $html .= '</ul>';
+    $html .= '</nav>';
+
+    return $html;
+}
+
+/**
+ * Get dynamic Hero Media / Slideshow HTML
+ */
+function eu_get_hero_media_html(): string {
+    $hero_config = function_exists( 'eu_get_hero_config' ) ? eu_get_hero_config() : [ 'images' => [], 'overlay_opacity' => 0.70, 'interval' => 5 ];
+    $hero_images = $hero_config['images'] ?? [];
+    if ( empty( $hero_images ) ) {
+        return '';
+    }
+
+    $is_slideshow = count( $hero_images ) > 1;
+    $interval     = (string) ( $hero_config['interval'] ?? 5 );
+    $opacity      = (string) ( $hero_config['overlay_opacity'] ?? 0.70 );
+
+    ob_start();
+    ?>
+    <div class="eu-hero-media" data-interval="<?php echo esc_attr( $interval ); ?>" aria-hidden="true">
+        <div class="eu-hero-slides">
+            <?php foreach ( $hero_images as $index => $img_url ) : ?>
+                <div class="eu-hero-slide<?php echo 0 === $index ? ' is-active' : ''; ?>" style="background-image: url('<?php echo esc_url( $img_url ); ?>')" data-index="<?php echo esc_attr( (string) $index ); ?>"></div>
+            <?php endforeach; ?>
+        </div>
+        <div class="eu-hero-overlay-layer" style="background: rgba(11, 11, 11, <?php echo esc_attr( $opacity ); ?>)"></div>
+        <?php if ( $is_slideshow ) : ?>
+            <div class="eu-hero-dots" role="tablist" aria-label="<?php esc_attr_e( 'Hero Slideshow Pagination', 'elegant-umrah' ); ?>">
+                <?php foreach ( $hero_images as $index => $img_url ) : ?>
+                    <button type="button" class="eu-hero-dot<?php echo 0 === $index ? ' is-active' : ''; ?>" data-slide-index="<?php echo esc_attr( (string) $index ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Go to slide %d', 'elegant-umrah' ), $index + 1 ) ); ?>"></button>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/**
  * Get dynamic Footer brand HTML (Logo, Site Title, Tagline)
  */
 function eu_get_footer_brand_html(): string {

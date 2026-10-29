@@ -47,8 +47,8 @@
 		<div class="wp-block-group">
 			<!-- wp:group {"layout":{"type":"constrained"}} -->
 			<div class="wp-block-group">
-				<!-- wp:paragraph {"textColor":"muted","style":{"typography":{"textTransform":"uppercase","letterSpacing":"0.05em"},"spacing":{"margin":{"top":"0","bottom":"0"}}},"fontSize":"xs"} -->
-				<p class="has-muted-color has-text-color has-xs-font-size" style="margin-bottom:0;margin-top:0;text-transform:uppercase;letter-spacing:0.05em"><?php esc_html_e( 'Starting from', 'elegant-umrah' ); ?></p>
+				<!-- wp:paragraph {"textColor":"muted","style":{"typography":{"letterSpacing":"0.05em","textTransform":"uppercase"},"spacing":{"margin":{"top":"0","bottom":"0"}}},"fontSize":"xs"} -->
+				<p class="has-muted-color has-text-color has-xs-font-size" style="margin-bottom:0;margin-top:0;letter-spacing:0.05em;text-transform:uppercase"><?php esc_html_e( 'Starting from', 'elegant-umrah' ); ?></p>
 				<!-- /wp:paragraph -->
 				<!-- wp:paragraph {"textColor":"secondary","style":{"typography":{"lineHeight":"1","fontWeight":"800"},"spacing":{"margin":{"top":"0","bottom":"0"}}},"fontSize":"xl"} -->
 				<p class="has-secondary-color has-text-color has-xl-font-size" style="margin-bottom:0;margin-top:0;font-weight:800;line-height:1"><?php esc_html_e( 'USD 1,500', 'elegant-umrah' ); ?></p>

@@ -70,7 +70,7 @@ function eu_setup() {
     }
 
     // Editor stylesheet
-    add_editor_style( 'assets/css/editor.css' );
+    add_editor_style( [ 'style.css', 'assets/css/editor.css' ] );
 }
 add_action( 'after_setup_theme', 'eu_setup' );
 
@@ -171,11 +171,6 @@ add_filter( 'image_size_names_choose', 'eu_add_image_size_names' );
 add_filter( 'template_include', function( string $template ): string {
     if ( is_singular( 'umrah_package' ) ) {
         $php_template = get_theme_file_path( 'single-umrah_package.php' );
-        if ( file_exists( $php_template ) ) {
-            return $php_template;
-        }
-    } elseif ( is_post_type_archive( 'umrah_package' ) ) {
-        $php_template = get_theme_file_path( 'archive-umrah_package.php' );
         if ( file_exists( $php_template ) ) {
             return $php_template;
         }

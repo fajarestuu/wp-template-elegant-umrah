@@ -1,16 +1,18 @@
 <!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
 
-<!-- wp:group {"tagName":"main","className":"eu-main-content","layout":{"type":"constrained"}} -->
+<!-- wp:group {"tagName":"main","className":"eu-main-content","layout":{"type":"default"}} -->
 <main class="wp-block-group eu-main-content">
 
-    <!-- wp:html -->
-    <div class="eu-archive-header" style="background-color:#0B0B0B;color:#FFFFFF;padding:clamp(3rem,8vw,5rem) 1.5rem clamp(2rem,5vw,3.5rem)">
-        <div style="max-width:800px;margin:0 auto;text-align:center">
-            <h1 class="eu-archive-title" style="font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;line-height:1.2;margin-bottom:1rem">News &amp; Articles</h1>
-            <p class="eu-archive-desc" style="color:rgba(255,255,255,0.65);font-size:0.95rem">Insights, tips, and updates about Hajj and Umrah journeys.</p>
-        </div>
+    <!-- wp:group {"align":"full","className":"eu-archive-header","style":{"spacing":{"padding":{"top":"clamp(3rem,8vw,5rem)","bottom":"clamp(2rem,5vw,3.5rem)","left":"1.5rem","right":"1.5rem"}}},"backgroundColor":"primary","layout":{"type":"constrained","contentSize":"800px"}} -->
+    <div class="wp-block-group alignfull eu-archive-header has-primary-background-color has-background" style="padding-bottom:clamp(2rem,5vw,3.5rem);padding-left:1.5rem;padding-right:1.5rem;padding-top:clamp(3rem,8vw,5rem)">
+        <!-- wp:heading {"textAlign":"center","level":1,"className":"eu-archive-title","textColor":"white","style":{"typography":{"fontWeight":"800","lineHeight":"1.2"},"spacing":{"margin":{"bottom":"1rem"}}}} -->
+        <h1 class="wp-block-heading has-text-align-center eu-archive-title has-white-color has-text-color" style="margin-bottom:1rem;font-weight:800;line-height:1.2">News &amp; Articles</h1>
+        <!-- /wp:heading -->
+        <!-- wp:paragraph {"align":"center","className":"eu-archive-desc","style":{"typography":{"fontSize":"0.95rem"}}} -->
+        <p class="has-text-align-center eu-archive-desc" style="font-size:0.95rem">Insights, tips, and updates about Hajj and Umrah journeys.</p>
+        <!-- /wp:paragraph -->
     </div>
-    <!-- /wp:html -->
+    <!-- /wp:group -->
 
     <!-- wp:group {"className":"eu-section","layout":{"type":"default"}} -->
     <div class="wp-block-group eu-section">
@@ -40,13 +42,19 @@
             <!-- /wp:post-template -->
 
             <!-- wp:query-no-results -->
-            <!-- wp:html -->
-            <div class="eu-no-results" style="text-align:center;padding:4rem 0">
-                <p style="font-size:2.5rem;margin-bottom:1rem">🔍</p>
-                <h3 style="color:#0B0B0B;font-size:1.5rem;font-weight:700;margin-bottom:0.5rem">No articles found.</h3>
-                <p style="color:#666666">Try searching or browse a different category.</p>
+            <!-- wp:group {"className":"eu-no-results","style":{"spacing":{"padding":{"top":"4rem","bottom":"4rem"}}},"layout":{"type":"constrained"}} -->
+            <div class="wp-block-group eu-no-results" style="padding-bottom:4rem;padding-top:4rem">
+                <!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"2.5rem"},"spacing":{"margin":{"bottom":"1rem"}}}} -->
+                <p class="has-text-align-center" style="font-size:2.5rem;margin-bottom:1rem">🔍</p>
+                <!-- /wp:paragraph -->
+                <!-- wp:heading {"textAlign":"center","level":3,"textColor":"primary","style":{"spacing":{"margin":{"bottom":"0.5rem"}}}} -->
+                <h3 class="wp-block-heading has-text-align-center has-primary-color has-text-color" style="margin-bottom:0.5rem">No articles found.</h3>
+                <!-- /wp:heading -->
+                <!-- wp:paragraph {"align":"center","textColor":"muted"} -->
+                <p class="has-text-align-center has-muted-color has-text-color">Try searching or browse a different category.</p>
+                <!-- /wp:paragraph -->
             </div>
-            <!-- /wp:html -->
+            <!-- /wp:group -->
             <!-- /wp:query-no-results -->
 
             <!-- wp:query-pagination {"paginationArrow":"arrow","className":"eu-pagination","layout":{"type":"flex","justifyContent":"center","flexWrap":"wrap"}} -->

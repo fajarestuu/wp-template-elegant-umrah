@@ -1,0 +1,40 @@
+{
+    "apiVersion": 3,
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "elegant-umrah/hero-search",
+    "version": "1.0.0",
+    "title": "EU Hero Search Bar",
+    "category": "elegant-umrah",
+    "icon": "search",
+    "description": "Interactive search bar with departure month and package type filters.",
+    "keywords": ["search", "filter", "month", "package", "hero"],
+    "textdomain": "elegant-umrah",
+    "attributes": {
+        "monthLabel": {
+            "type": "string",
+            "default": "Bulan Keberangkatan"
+        },
+        "monthPlaceholder": {
+            "type": "string",
+            "default": "Semua Bulan Keberangkatan"
+        },
+        "typeLabel": {
+            "type": "string",
+            "default": "Tipe Paket"
+        },
+        "typePlaceholder": {
+            "type": "string",
+            "default": "Semua Tipe Paket"
+        },
+        "buttonText": {
+            "type": "string",
+            "default": "Cari Paket"
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true
+    },
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php"
+}

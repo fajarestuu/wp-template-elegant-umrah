@@ -1,0 +1,24 @@
+{
+    "apiVersion": 3,
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "elegant-umrah/articles-grid",
+    "version": "1.0.0",
+    "title": "EU Articles Grid",
+    "category": "elegant-umrah",
+    "icon": "welcome-write-blog",
+    "description": "Dynamic grid of latest news and spiritual guidance articles.",
+    "keywords": ["articles", "blog", "posts", "news"],
+    "textdomain": "elegant-umrah",
+    "attributes": {
+        "postsPerPage": {
+            "type": "integer",
+            "default": 3
+        }
+    },
+    "supports": {
+        "html": false,
+        "anchor": true
+    },
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php"
+}

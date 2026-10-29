@@ -1399,14 +1399,26 @@ header.wp-block-template-part:has(.eu-site-header) {
     }
 }
 
-.eu-footer-brand .logo-text {
+.eu-footer-brand .logo-text,
+.eu-footer-brand-title-wrap .wp-block-site-title a,
+.eu-footer-brand-title-wrap .wp-block-site-title {
     font-size: 1.3rem;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 0.25rem;
+    text-decoration: none;
+    margin: 0;
+    line-height: 1.2;
 }
 
-.eu-footer-brand .tagline {
+.eu-footer-brand-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.eu-footer-brand .tagline,
+.eu-footer-brand-tagline {
     font-size: 0.75rem;
     color: var(--wp--preset--color--secondary);
     letter-spacing: 0.1em;
@@ -1414,19 +1426,24 @@ header.wp-block-template-part:has(.eu-site-header) {
     margin-bottom: 1.25rem;
 }
 
-.eu-footer-brand p {
+.eu-footer-brand p,
+.eu-footer-desc {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.55);
     line-height: 1.75;
     margin-bottom: 1.5rem;
 }
 
-.eu-footer-social {
+.eu-footer-social,
+.wp-block-social-links.eu-footer-social {
     display: flex;
     gap: 0.75rem;
+    padding: 0;
+    list-style: none;
 }
 
-.eu-social-link {
+.eu-social-link,
+.wp-block-social-links.eu-footer-social .wp-block-social-link {
     width: 36px;
     height: 36px;
     border-radius: 8px;
@@ -1440,11 +1457,31 @@ header.wp-block-template-part:has(.eu-site-header) {
     transition: all 0.25s ease;
 }
 
-.eu-social-link:hover {
+.wp-block-social-links.eu-footer-social .wp-block-social-link a {
+    color: #D4AF37 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.wp-block-social-links.eu-footer-social .wp-block-social-link svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.eu-social-link:hover,
+.wp-block-social-links.eu-footer-social .wp-block-social-link:hover {
     background: var(--wp--preset--color--secondary);
     border-color: var(--wp--preset--color--secondary);
     color: var(--wp--preset--color--primary) !important;
     transform: translateY(-2px);
+}
+
+.wp-block-social-links.eu-footer-social .wp-block-social-link:hover svg {
+    fill: var(--wp--preset--color--primary) !important;
 }
 
 .eu-footer-col h4 {
@@ -1536,8 +1573,9 @@ header.wp-block-template-part:has(.eu-site-header) {
     }
 }
 
-.eu-footer-bottom p {
-    color: rgba(255, 255, 255, 0.3);
+.eu-footer-bottom p,
+.eu-footer-copyright {
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.8rem;
     margin: 0;
 }
@@ -3550,6 +3588,12 @@ header.wp-block-template-part:has(.eu-site-header) {
     pointer-events: none;
 }
 
+.eu-hero-inner {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+}
+
 .eu-hero-slides {
     position: absolute;
     inset: 0;
@@ -3690,6 +3734,70 @@ header.wp-block-template-part:has(.eu-site-header) {
 .eu-pkg-content .eu-breadcrumbs {
     margin-bottom: 1.25rem;
 }
+
+/* =========================================
+   TEMPLATE PART & BLOCK LAYOUT RULES
+   ========================================= */
+
+.eu-site-header {
+    background-color: #0B0B0B;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.eu-footer {
+    background-color: #080808;
+}
+
+.eu-footer-inner {
+    padding: 4rem 1.5rem 2rem;
+}
+
+.eu-footer-grid {
+    margin-bottom: 3rem;
+    gap: 2.5rem;
+}
+
+.eu-footer-heading {
+    color: #FFFFFF !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 1.25rem !important;
+    padding-bottom: 0.75rem !important;
+    display: inline-block !important;
+}
+
+.eu-widget-cta {
+    background-color: #0B0B0B;
+    border-radius: 12px;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+}
+
+.eu-widget-cta-icon {
+    font-size: 2rem;
+    margin: 0 0 0.75rem !important;
+}
+
+.eu-widget-cta-title {
+    color: #FFFFFF !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.eu-widget-cta-desc {
+    font-size: 0.8rem !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+    margin-bottom: 1.25rem !important;
+}
+
+.eu-page-content {
+    padding: clamp(2.5rem, 6vw, 4rem) 1.5rem;
+}
+
 
 
 
