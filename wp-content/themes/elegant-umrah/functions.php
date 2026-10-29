@@ -13,12 +13,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 // =========================================
 // THEME CONSTANTS
 // =========================================
-define( 'EU_VERSION',    '1.0.0' );
+define( 'EU_VERSION',    '1.0.1' );
 define( 'EU_DIR',        get_template_directory() );
 define( 'EU_URI',        get_template_directory_uri() );
 define( 'EU_INC',        EU_DIR . '/inc' );
 define( 'EU_ASSETS_URI', EU_URI . '/assets' );
 define( 'EU_TEXT_DOMAIN', 'elegant-umrah' );
+
+// Automatically flush WordPress block pattern cache when theme version changes
+add_action( 'init', function() {
+    $cached_ver = get_option( 'eu_installed_theme_version', '' );
+    if ( $cached_ver !== EU_VERSION ) {
+        $theme = wp_get_theme();
+        if ( method_exists( $theme, 'delete_pattern_cache' ) ) {
+            $theme->delete_pattern_cache();
+        }
+        update_option( 'eu_installed_theme_version', EU_VERSION );
+    }
+} );
 
 // =========================================
 // LOAD INCLUDES

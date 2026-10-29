@@ -19,12 +19,19 @@ function eu_enqueue_assets() {
         null
     );
 
+    // Cache-busting asset versions
+    $style_file = get_stylesheet_directory() . '/style.css';
+    $style_ver  = file_exists( $style_file ) ? (string) filemtime( $style_file ) : EU_VERSION;
+
+    $script_file = get_template_directory() . '/assets/js/main.js';
+    $script_ver  = file_exists( $script_file ) ? (string) filemtime( $script_file ) : EU_VERSION;
+
     // Main stylesheet
     wp_enqueue_style(
         'elegant-umrah-style',
         get_stylesheet_uri(),
         [ 'eu-google-fonts' ],
-        EU_VERSION
+        $style_ver
     );
 
     // Main JS
@@ -32,7 +39,7 @@ function eu_enqueue_assets() {
         'elegant-umrah-main',
         EU_ASSETS_URI . '/js/main.js',
         [],
-        EU_VERSION,
+        $script_ver,
         [ 'strategy' => 'defer', 'in_footer' => true ]
     );
 
