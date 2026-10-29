@@ -242,11 +242,11 @@ add_filter( 'render_block', function( string $block_content, array $block ): str
         $block_content .= eu_get_mobile_nav_html();
     }
 
-    // 3. Hero Slideshow Media Layer on frontend
-    if ( ! is_admin() && ! empty( $block['attrs']['className'] ) && strpos( $block['attrs']['className'], 'eu-hero' ) !== false && function_exists( 'eu_get_hero_media_html' ) ) {
+    // 3. Hero Slideshow Media Layer on frontend (only outer .eu-hero, never .eu-hero-inner)
+    if ( ! is_admin() && ! empty( $block['attrs']['className'] ) && preg_match( '/\beu-hero\b/', $block['attrs']['className'] ) && ! preg_match( '/\beu-hero-inner\b/', $block['attrs']['className'] ) && function_exists( 'eu_get_hero_media_html' ) ) {
         $media_html = eu_get_hero_media_html();
         if ( $media_html ) {
-            $block_content = preg_replace( '#(<div\s+[^>]*class=["\'][^"\']*eu-hero[^"\']*["\'][^>]*>)#i', '$1' . $media_html, $block_content, 1 );
+            $block_content = preg_replace( '#(<div\s+[^>]*class=["\'][^"\']*\beu-hero\b(?!\-)[^"\']*["\'][^>]*>)#i', '$1' . $media_html, $block_content, 1 );
         }
     }
 

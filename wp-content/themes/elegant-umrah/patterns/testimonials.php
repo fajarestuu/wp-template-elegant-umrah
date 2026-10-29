@@ -7,7 +7,7 @@
  * Description: Dark testimonials section with 3 pilgrim reviews.
  */
 ?>
-<!-- wp:group {"align":"full","className":"eu-section eu-section-dark","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|70","left":"var:preset|spacing|30","right":"var:preset|spacing|30"}}},"backgroundColor":"primary"} -->
+<!-- wp:group {"align":"full","className":"eu-section eu-section-dark","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|70","left":"var:preset|spacing|30","right":"var:preset|spacing|30"}}},"backgroundColor":"primary","layout":{"type":"constrained","contentSize":"1200px"}} -->
 <div class="wp-block-group alignfull eu-section eu-section-dark has-primary-background-color has-background" style="padding-bottom:var(--wp--preset--spacing--70);padding-left:var(--wp--preset--spacing--30);padding-right:var(--wp--preset--spacing--30);padding-top:var(--wp--preset--spacing--70)">
 	<!-- wp:group {"layout":{"type":"constrained","contentSize":"680px"}} -->
 	<div class="wp-block-group">
@@ -20,7 +20,7 @@
 	</div>
 	<!-- /wp:group -->
 
-	<!-- wp:columns {"className":"eu-testimonials-grid","style":{"spacing":{"blockGap":{"top":"var:preset|spacing|30","left":"var:preset|spacing|30"}}},"layout":{"type":"constrained","contentSize":"1200px"}} -->
+	<!-- wp:columns {"className":"eu-testimonials-grid"} -->
 	<div class="wp-block-columns eu-testimonials-grid">
 		<!-- wp:column -->
 		<div class="wp-block-column">
