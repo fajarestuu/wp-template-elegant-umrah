@@ -104,11 +104,10 @@ function eu_ajax_filter_packages(): void {
     $month        = sanitize_text_field( $_POST['month'] ?? '' );
 
     $args = [
-        'post_type'      => 'umrah_package',
-        'posts_per_page' => 9,
-        'post_status'    => 'publish',
-        'orderby'        => 'date',
-        'order'          => 'DESC',
+        'post_type'        => 'umrah_package',
+        'posts_per_page'   => 9,
+        'post_status'      => 'publish',
+        'eu_sort_packages' => true,
     ];
 
     $meta_query = [];
@@ -180,6 +179,8 @@ add_action( 'pre_get_posts', function( WP_Query $query ): void {
     }
 
     if ( $query->is_post_type_archive( 'umrah_package' ) ) {
+        $query->set( 'eu_sort_packages', true );
+
         $meta_query = $query->get( 'meta_query' ) ?: [];
 
         // Filter by package type
@@ -224,6 +225,51 @@ add_action( 'pre_get_posts', function( WP_Query $query ): void {
         }
     }
 } );
+
+// =========================================
+// CUSTOM ORDERING FOR PACKAGES (Best Seller First + Departure Date / Month)
+// =========================================
+add_filter( 'posts_clauses', function( array $clauses, WP_Query $query ): array {
+    if ( ! $query->get( 'eu_sort_packages' ) ) {
+        return $clauses;
+    }
+
+    global $wpdb;
+
+    // Join for Best Seller (eu_is_featured)
+    $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pm_feat ON ({$wpdb->posts}.ID = pm_feat.post_id AND pm_feat.meta_key = 'eu_is_featured')";
+
+    // Join for Departure Date (eu_departure_date)
+    $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pm_dep ON ({$wpdb->posts}.ID = pm_dep.post_id AND pm_dep.meta_key = 'eu_departure_date')";
+
+    // Join for Estimate Month (eu_estimate_month)
+    $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} AS pm_est ON ({$wpdb->posts}.ID = pm_est.post_id AND pm_est.meta_key = 'eu_estimate_month')";
+
+    // Order by:
+    // 1. Best Seller first (1 before 0)
+    // 2. Has schedule first (items with departure date or estimate month come before unscheduled)
+    // 3. Departure date if present, otherwise estimate month (with -32 suffix so specific dates in same month come first)
+    // 4. Newest post date tie-breaker
+    $clauses['orderby'] = "
+        CASE WHEN pm_feat.meta_value = '1' THEN 1 ELSE 0 END DESC,
+        CASE
+            WHEN (pm_dep.meta_value IS NOT NULL AND pm_dep.meta_value != '')
+              OR (pm_est.meta_value IS NOT NULL AND pm_est.meta_value != '')
+            THEN 0
+            ELSE 1
+        END ASC,
+        CASE
+            WHEN pm_dep.meta_value IS NOT NULL AND pm_dep.meta_value != ''
+                THEN pm_dep.meta_value
+            WHEN pm_est.meta_value IS NOT NULL AND pm_est.meta_value != ''
+                THEN CONCAT(pm_est.meta_value, '-32')
+            ELSE '9999-99-99'
+        END ASC,
+        {$wpdb->posts}.post_date DESC
+    ";
+
+    return $clauses;
+}, 10, 2 );
 
 // =========================================
 // SUBDIRECTORY ROOT-RELATIVE LINK REWRITER

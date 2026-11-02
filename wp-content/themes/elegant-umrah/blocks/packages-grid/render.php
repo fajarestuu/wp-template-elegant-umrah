@@ -13,11 +13,10 @@ $posts_per_page = isset( $attributes['postsPerPage'] ) ? max( 1, (int) $attribut
 $show_filter    = ! empty( $attributes['showFilter'] );
 
 $query_args = [
-    'post_type'      => 'umrah_package',
-    'post_status'    => 'publish',
-    'posts_per_page' => $posts_per_page,
-    'orderby'        => 'date',
-    'order'          => 'DESC',
+    'post_type'        => 'umrah_package',
+    'post_status'      => 'publish',
+    'posts_per_page'   => $posts_per_page,
+    'eu_sort_packages' => true,
 ];
 
 // Check URL filters if present on archive pages
