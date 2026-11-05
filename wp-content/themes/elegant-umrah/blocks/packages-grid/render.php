@@ -88,7 +88,7 @@ $active_filter  = isset( $_GET['type'] ) ? sanitize_key( wp_unslash( $_GET['type
         </div>
     <?php endif; ?>
 
-    <div class="eu-packages-grid" style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:var(--wp--preset--spacing--30, 2rem);">
+    <div class="eu-packages-grid">
         <?php
         if ( $packages_query->have_posts() ) {
             while ( $packages_query->have_posts() ) {
