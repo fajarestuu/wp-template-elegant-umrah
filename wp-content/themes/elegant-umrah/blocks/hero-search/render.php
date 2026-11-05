@@ -18,6 +18,9 @@ $button_text       = ! empty( $attributes['buttonText'] ) ? $attributes['buttonT
 $available_months = function_exists( 'eu_get_available_departure_months' ) ? eu_get_available_departure_months() : [];
 $package_types    = function_exists( 'eu_get_package_types' ) ? eu_get_package_types() : [];
 $action_url       = home_url( '/packages/' );
+
+$current_month = isset( $_GET['month'] ) ? sanitize_text_field( wp_unslash( $_GET['month'] ) ) : '';
+$current_type  = isset( $_GET['type'] ) ? sanitize_key( wp_unslash( $_GET['type'] ) ) : 'all';
 ?>
 <div class="eu-hero-search-wrapper">
     <div class="eu-hero-search-card">
@@ -32,7 +35,7 @@ $action_url       = home_url( '/packages/' );
                     <select id="eu-search-month" name="month" class="eu-hero-search-select">
                         <option value=""><?php echo esc_html( $month_placeholder ); ?></option>
                         <?php foreach ( $available_months as $m_val => $m_label ) : ?>
-                            <option value="<?php echo esc_attr( $m_val ); ?>"><?php echo esc_html( $m_label ); ?></option>
+                            <option value="<?php echo esc_attr( $m_val ); ?>" <?php selected( $current_month, $m_val ); ?>><?php echo esc_html( $m_label ); ?></option>
                         <?php endforeach; ?>
                     </select>
                     <span class="eu-hero-select-arrow" aria-hidden="true">
@@ -54,7 +57,7 @@ $action_url       = home_url( '/packages/' );
                     <select id="eu-search-type" name="type" class="eu-hero-search-select">
                         <option value="all"><?php echo esc_html( $type_placeholder ); ?></option>
                         <?php foreach ( $package_types as $t_slug => $t_name ) : ?>
-                            <option value="<?php echo esc_attr( $t_slug ); ?>"><?php echo esc_html( $t_name ); ?></option>
+                            <option value="<?php echo esc_attr( $t_slug ); ?>" <?php selected( $current_type, $t_slug ); ?>><?php echo esc_html( $t_name ); ?></option>
                         <?php endforeach; ?>
                     </select>
                     <span class="eu-hero-select-arrow" aria-hidden="true">
